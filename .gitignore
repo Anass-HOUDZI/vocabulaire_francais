@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.vite
+coverage
+*.tsbuildinfo
+*.log
+
+# Réglages locaux de l'outillage : chemins absolus et identifiants de session
+.claude/

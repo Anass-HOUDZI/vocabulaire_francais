@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Lexique — Plan de développement</title>
+<style>
+  :root {
+    color-scheme: light;
+    --fond: #faf7f2;
+    --fond-2: #f2ede4;
+    --surface: #ffffff;
+    --surface-2: #f7f4ee;
+    --bordure: #e4ddd1;
+    --bordure-forte: #cfc5b4;
+    --texte: #22201d;
+    --texte-2: #57524a;
+    --texte-3: #8b8478;
+    --accent: #8a3d2e;
+    --accent-fort: #6e2f23;
+    --accent-doux: #f5e8e3;
+    --succes: #1f6b45;
+    --succes-doux: #e4f0e9;
+    --alerte: #8a6116;
+    --alerte-doux: #f8eeda;
+    --erreur: #a32b25;
+    --erreur-doux: #f9e7e5;
+    --info: #2b5578;
+    --info-doux: #e5edf5;
+    --ombre: 0 1px 2px rgb(34 32 29 / 5%), 0 6px 22px rgb(34 32 29 / 6%);
+    --rayon: 10px;
+    --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+    --sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      color-scheme: dark;
+      --fond: #15141a;
+      --fond-2: #1c1b22;
+      --surface: #201f27;
+      --surface-2: #27262f;
+      --bordure: #33323d;
+      --bordure-forte: #4a4956;
+      --texte: #ece9e4;
+      --texte-2: #b4afa7;
+      --texte-3: #857f78;
+      --accent: #e08a72;
+      --accent-fort: #f0a48d;
+      --accent-doux: #35251f;
+      --succes: #6bd39c;
+      --succes-doux: #16281f;
+      --alerte: #e0b14f;
+      --alerte-doux: #2b2314;
+      --erreur: #f08d84;
+      --erreur-doux: #2d1b1a;
+      --info: #85b6dd;
+      --info-doux: #16212b;
+      --ombre: 0 1px 2px rgb(0 0 0 / 40%), 0 6px 22px rgb(0 0 0 / 35%);
+    }
+  }
+
+  :root[data-theme='dark'] {
+    color-scheme: dark;
+    --fond: #15141a;
+    --fond-2: #1c1b22;
+    --surface: #201f27;
+    --surface-2: #27262f;
+    --bordure: #33323d;
+    --bordure-forte: #4a4956;
+    --texte: #ece9e4;
+    --texte-2: #b4afa7;
+    --texte-3: #857f78;
+    --accent: #e08a72;
+    --accent-fort: #f0a48d;
+    --accent-doux: #35251f;
+    --succes: #6bd39c;
+    --succes-doux: #16281f;
+    --alerte: #e0b14f;
+    --alerte-doux: #2b2314;
+    --erreur: #f08d84;
+    --erreur-doux: #2d1b1a;
+    --info: #85b6dd;
+    --info-doux: #16212b;
+    --ombre: 0 1px 2px rgb(0 0 0 / 40%), 0 6px 22px rgb(0 0 0 / 35%);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--fond);
+    color: var(--texte);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+  }
+
+  /* ---------------------------------------------------------- en-tête */
+
+  .chapeau { border-bottom: 1px solid var(--bordure); padding-bottom: 2rem; margin-bottom: 2.5rem; }
+
+  .surtitre {
+    font-size: 0.74rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin: 0 0 0.6rem;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5.5vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.8rem;
+    font-weight: 600;
+  }
+
+  .accroche { font-size: 1.1rem; color: var(--texte-2); margin: 0; max-width: 46rem; }
+
+  .jalons { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.4rem; }
+
+  .jalon {
+    font-size: 0.8rem;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--bordure-forte);
+    background: var(--surface);
+    color: var(--texte-2);
+  }
+  .jalon b { color: var(--texte); font-variant-numeric: tabular-nums; }
+  .jalon--ok { background: var(--succes-doux); border-color: color-mix(in srgb, var(--succes) 40%, transparent); color: var(--succes); }
+  .jalon--ok b { color: inherit; }
+
+  /* ------------------------------------------------------------ corps */
+
+  h2 {
+    font-family: var(--serif);
+    font-size: 1.65rem;
+    letter-spacing: -0.01em;
+    margin: 3.5rem 0 0.4rem;
+    font-weight: 600;
+    display: flex;
+    align-items: baseline;
+    gap: 0.65rem;
+  }
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  h3 {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    margin: 2rem 0 0.4rem;
+    font-weight: 600;
+  }
+
+  p { margin: 0 0 0.9rem; }
+  p:last-child { margin-bottom: 0; }
+
+  a { color: var(--accent); text-underline-offset: 2px; }
+
+  .intro { color: var(--texte-2); margin-bottom: 1.6rem; max-width: 48rem; }
+
+  code, kbd {
+    font-family: var(--mono);
+    font-size: 0.86em;
+    background: var(--surface-2);
+    border: 1px solid var(--bordure);
+    border-radius: 5px;
+    padding: 0.08em 0.36em;
+  }
+
+  pre {
+    background: var(--surface-2);
+    border: 1px solid var(--bordure);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--rayon) var(--rayon) 0;
+    padding: 1rem 1.1rem;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 0.84rem;
+    line-height: 1.65;
+    margin: 0 0 1.2rem;
+  }
+  pre code { background: none; border: none; padding: 0; font-size: inherit; }
+
+  /* --------------------------------------------------------- tableaux */
+
+  .cadre-table {
+    overflow-x: auto;
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon);
+    background: var(--surface);
+    box-shadow: var(--ombre);
+    margin: 0 0 1.4rem;
+  }
+
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; min-width: 34rem; }
+
+  th, td {
+    text-align: left;
+    padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid var(--bordure);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+
+  th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--texte-3);
+    font-weight: 700;
+    background: var(--surface-2);
+    white-space: nowrap;
+  }
+
+  td.serre { white-space: nowrap; }
+  td.mot { font-family: var(--serif); font-weight: 600; }
+
+  .num-cell { font-family: var(--mono); font-size: 0.8rem; color: var(--texte-3); font-weight: 700; }
+
+  /* -------------------------------------------------------- étiquettes */
+
+  .et {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.14rem 0.5rem;
+    border-radius: 5px;
+    border: 1px solid currentColor;
+    white-space: nowrap;
+  }
+  .et--ok { background: var(--succes-doux); color: var(--succes); }
+  .et--crit { background: var(--erreur-doux); color: var(--erreur); }
+  .et--haut { background: var(--alerte-doux); color: var(--alerte); }
+  .et--moyen { background: var(--info-doux); color: var(--info); }
+  .et--bas { background: var(--surface-2); color: var(--texte-3); }
+  .et--non { background: var(--erreur-doux); color: var(--erreur); }
+  .et--oui { background: var(--succes-doux); color: var(--succes); }
+
+  /* --------------------------------------------------------- encadrés */
+
+  .fiche {
+    background: var(--surface);
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon);
+    padding: 1.15rem 1.3rem;
+    margin: 0 0 1rem;
+    box-shadow: var(--ombre);
+  }
+  .fiche > h3 { margin-top: 0; }
+  .fiche > :last-child { margin-bottom: 0; }
+
+  .fiche--accent { border-left: 3px solid var(--accent); }
+
+  .exemple-phono {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0 0 1rem;
+  }
+  .phono {
+    display: grid;
+    grid-template-columns: 9rem 8rem 1fr;
+    gap: 0.6rem;
+    align-items: baseline;
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+    border: 1px solid;
+    font-size: 0.92rem;
+  }
+  .phono--oui { background: var(--succes-doux); border-color: color-mix(in srgb, var(--succes) 35%, transparent); }
+  .phono--non { background: var(--erreur-doux); border-color: color-mix(in srgb, var(--erreur) 35%, transparent); }
+  .phono b { font-family: var(--serif); font-size: 1.05rem; font-weight: 600; }
+  .phono span.api { font-family: var(--mono); font-size: 0.86rem; color: var(--texte-2); }
+  .phono i { font-style: normal; font-size: 0.85rem; color: var(--texte-2); }
+  .phono--oui strong { color: var(--succes); }
+  .phono--non strong { color: var(--erreur); }
+
+  ul.liste { margin: 0 0 1rem; padding-left: 1.15rem; }
+  ul.liste li { margin-bottom: 0.35rem; }
+  ul.liste li::marker { color: var(--accent); }
+
+  .hors-perimetre {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0.6rem 0 0;
+  }
+  .hors-perimetre span {
+    font-size: 0.82rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: var(--surface-2);
+    border: 1px solid var(--bordure);
+    color: var(--texte-3);
+    text-decoration: line-through;
+    text-decoration-color: color-mix(in srgb, var(--erreur) 60%, transparent);
+  }
+
+  .note-bas {
+    margin-top: 4rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--bordure);
+    font-size: 0.85rem;
+    color: var(--texte-3);
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 2rem 1rem 4rem; }
+    .phono { grid-template-columns: 1fr; gap: 0.15rem; }
+    h2 { flex-direction: column; gap: 0.1rem; }
+  }
+</style>
+</head>
+<body>
+
+
+<div class="page">
+
+  <header class="chapeau">
+    <p class="surtitre">Application d'apprentissage lexical · Plan de développement</p>
+    <h1>Lexique — du cadre au MVP</h1>
+    <p class="accroche">
+      Mémoriser le vocabulaire français soutenu par répétition espacée et exercices contextuels.
+      Une maquette fonctionnelle est déjà dans le dépôt ; ce document fixe ce qui est décidé,
+      ce qui est coupé, et ce qui reste à faire.
+    </p>
+    <div class="jalons">
+      <span class="jalon jalon--ok"><b>L0–L2</b> livrés</span>
+      <span class="jalon"><b>60</b> fiches relues</span>
+      <span class="jalon"><b>100 %</b> trisyllabiques</span>
+      <span class="jalon"><b>63</b> tests verts</span>
+      <span class="jalon"><b>100 Ko</b> gzip</span>
+      <span class="jalon"><b>0</b> dépendance hors React</span>
+    </div>
+  </header>
+
+  <!-- ======================================================= 1. CADRE -->
+  <h2><span class="num">01</span> Le cadre est confirmé — cinq ajustements</h2>
+  <p class="intro">
+    Cinq points méritent d'être redressés avant d'aller plus loin, parce qu'ils changent
+    le produit et pas seulement son implémentation.
+  </p>
+
+  <h3>1.1 &nbsp;« Trois syllabes » doit être défini phonétiquement, sinon le filtre est faux</h3>
+  <p>
+    C'est l'ajustement le plus important. En français la syllabe se compte à l'oral, et deux
+    règles font mentir l'orthographe : le <strong>e caduc</strong> final ne se prononce pas, et
+    les <strong>semi-voyelles</strong> /j/, /w/, /ɥ/ ne forment pas de syllabe.
+  </p>
+  <div class="exemple-phono">
+    <div class="phono phono--oui"><b>atavique</b><span class="api">/a.ta.vik/</span><i><strong>3 syllabes</strong> — le « e » final est muet</i></div>
+    <div class="phono phono--non"><b>spécieux</b><span class="api">/spe.sjø/</span><i><strong>2 syllabes</strong> — « -ieux » ne compte que pour une</i></div>
+    <div class="phono phono--non"><b>obvier</b><span class="api">/ɔb.vje/</span><i><strong>2 syllabes</strong> — « -ier » ne compte que pour une</i></div>
+    <div class="phono phono--oui"><b>insidieux</b><span class="api">/ɛ̃.si.djø/</span><i><strong>3 syllabes</strong> — malgré la même terminaison</i></div>
+  </div>
+  <p>
+    Sans cette règle écrite, un filtre « 3 syllabes » laisse passer une moitié de dissyllabiques
+    et rejette des trisyllabiques légitimes. Elle est appliquée dans les 60 fiches livrées et
+    vérifiée par <code>corpus.test.ts</code>.
+  </p>
+
+  <h3>1.2 &nbsp;Le rappel actif est l'exercice central, pas le QCM</h3>
+  <p>
+    Reconnaître <em>sycophante</em> parmi quatre propositions et le produire soi-même à partir
+    d'une définition sont deux compétences distinctes. La première s'acquiert en trois passages
+    et donne une impression de maîtrise qui ne survit pas à l'usage réel. L'objectif visé est un
+    objectif de <strong>production</strong>. Le QCM sert donc d'échauffement pendant
+    l'apprentissage, puis cède la place à la saisie libre dès le passage en révision.
+  </p>
+
+  <h3>1.3 &nbsp;Le mésusage est le cœur pédagogique, pas un bonus</h3>
+  <p>
+    Pour un locuteur natif cultivé, le problème n'est presque jamais d'ignorer un mot : c'est de
+    l'employer légèrement de travers. <em>Laconique</em> pour un silence complet, <em>acuité</em>
+    pour la vivacité de repartie, <em>fustiger contre</em>, <em>éluder</em> pour <em>élucider</em>,
+    <em>versatile</em> au sens anglais. Ces erreurs sont invisibles à celui qui les commet et
+    coûtent cher à l'écrit.
+  </p>
+  <p>
+    Le champ <code>mesusage</code> est donc obligatoire dans chaque fiche, et un format
+    d'exercice entier lui est consacré — deux phrases, une correcte, une fautive, laquelle ?
+  </p>
+
+  <h3>1.4 &nbsp;Soixante mots ne font pas un MVP livrable</h3>
+  <p>
+    Le corpus relu compte 60 entrées. À 8 nouveaux mots par jour, un utilisateur assidu l'épuise
+    en <strong>huit jours</strong>. Le seuil de sortie proposé est de <strong>300 fiches
+    relues</strong> ; la section 4 donne le pipeline pour y arriver sans les écrire à la main.
+    C'est la seule partie du périmètre qui ne s'atteint pas en quelques jours.
+  </p>
+
+  <h3>1.5 &nbsp;« Déverbaliser » : reformulation</h3>
+  <p>
+    Le terme désigne en traduction l'étape où l'on détache le sens de sa formulation d'origine.
+    Appliqué ici, l'objectif opérationnel retenu est : <strong>casser la reconnaissance passive
+    et forcer la production active</strong>. D'où le rappel définition&nbsp;→&nbsp;mot, la
+    reformulation d'une périphrase plate par le mot juste en v1, et le refus d'un parcours qui se
+    résumerait à relire des fiches. <em>Si l'intention était autre, c'est le seul point du cadre
+    qui demande un retour.</em>
+  </p>
+
+  <!-- ================================================== 2. DÉCISIONS -->
+  <h2><span class="num">02</span> Décisions techniques figées</h2>
+  <p class="intro">
+    Chaque ligne indique aussi son seuil de bascule : la condition qui rendrait la décision
+    caduque. Une décision sans condition de sortie est un dogme.
+  </p>
+
+  <div class="cadre-table">
+    <table>
+      <thead>
+        <tr><th>№</th><th>Sujet</th><th>Retenu</th><th>Rejeté</th><th>Raison &amp; seuil de bascule</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="num-cell">01</td><td class="mot">Stack</td>
+          <td>React 19 + TypeScript + Vite</td><td>SvelteKit, Next.js, Astro</td>
+          <td>Aucun besoin de SSR ni de routes. Next.js apporterait un serveur pour une application sans backend.</td>
+        </tr>
+        <tr>
+          <td class="num-cell">02</td><td class="mot">Planificateur</td>
+          <td>SM-2 maison, 4 notes, ~150 lignes</td><td>FSRS via <code>ts-fsrs</code></td>
+          <td>FSRS est meilleur, mais 60 mots ne calibrent rien. <strong>Contrepartie assumée : le journal enregistre déjà <code>etatAvant</code> et <code>joursEcoules</code></strong> — sans eux la bascule serait impossible rétroactivement. Bascule à ≥ 800 révisions.</td>
+        </tr>
+        <tr>
+          <td class="num-cell">03</td><td class="mot">Persistance</td>
+          <td><code>localStorage</code>, historique <strong>jamais tronqué</strong></td><td>IndexedDB / Dexie</td>
+          <td>Quelques centaines de Ko, API synchrone, zéro dépendance. Tronquer l'historique reviendrait à renoncer à la décision 02. Bascule au-delà de ~10 000 révisions.</td>
+        </tr>
+        <tr>
+          <td class="num-cell">04</td><td class="mot">État global</td>
+          <td><code>useReducer</code> + contexte</td><td>Zustand, Redux</td>
+          <td>Un seul objet sérialisable, transitions déclenchées par l'utilisateur seul. Bascule dès qu'il y a des écritures concurrentes.</td>
+        </tr>
+        <tr>
+          <td class="num-cell">05</td><td class="mot">Navigation</td>
+          <td>4 onglets via <code>location.hash</code></td><td>React&nbsp;Router</td>
+          <td>Quatre écrans sans paramètre. Conséquence assumée : pas d'URL partageable vers une fiche.</td>
+        </tr>
+        <tr>
+          <td class="num-cell">06</td><td class="mot">Audio</td>
+          <td>Web Speech API, voix <code>fr-*</code></td><td>MP3 pré-générés, TTS cloud</td>
+          <td>Aucune clé, aucune donnée sortante. <strong>L'API phonétique écrite reste la source de vérité</strong> : beaucoup d'Android n'ont aucune voix française.</td>
+        </tr>
+        <tr>
+          <td class="num-cell">07</td><td class="mot">Notation</td>
+          <td>Verdict calculé, puis notes SRS restreintes selon le résultat</td><td>Auto-évaluation libre après chaque exercice</td>
+          <td>Deux sources de note sur le même item se contredisent. Une réponse fausse ne peut pas être notée « Facile ».</td>
+        </tr>
+        <tr>
+          <td class="num-cell">08</td><td class="mot">Accents</td>
+          <td>Tolérés en saisie, <strong>signalés</strong>, mode strict optionnel</td><td>Refus strict par défaut</td>
+          <td>Sur mobile, saisir « é » coûte un appui long : refuser transformerait un exercice de lexique en exercice de clavier.</td>
+        </tr>
+        <tr>
+          <td class="num-cell">09</td><td class="mot">Distracteurs</td>
+          <td>Écrits à la main, un jeu par phrase</td><td>Génération par embeddings ou fréquence</td>
+          <td>Un leurre écrit pour <em>cette</em> phrase bat n'importe quelle heuristique. Le coût est reporté sur la production du corpus, où il est assumé.</td>
+        </tr>
+        <tr>
+          <td class="num-cell">10</td><td class="mot">Langue de l'UI</td>
+          <td>Français en dur, aucune couche i18n</td><td><code>react-i18next</code></td>
+          <td>Décision explicite, à écrire — sinon quelqu'un l'ajoutera « au cas où ».</td>
+        </tr>
+        <tr>
+          <td class="num-cell">11</td><td class="mot">PWA / hors ligne</td>
+          <td><strong>Hors MVP</strong>, reporté au lot L6</td><td><code>vite-plugin-pwa</code> dès maintenant</td>
+          <td>Le service worker exigera de passer <code>base</code> de <code>'./'</code> à un chemin absolu : un SW en base relative ne contrôle rien.</td>
+        </tr>
+        <tr>
+          <td class="num-cell">12</td><td class="mot">Télémétrie</td>
+          <td>Aucune. Zéro requête réseau à l'exécution</td><td>—</td>
+          <td>Cohérent avec le fonctionnement hors ligne et l'absence de compte.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ==================================================== 3. LIVRÉ -->
+  <h2><span class="num">03</span> Ce qui est déjà livré</h2>
+  <p class="intro">
+    La maquette fonctionne : <code>npm install &amp;&amp; npm run dev</code>. Il manque le corpus
+    et les lots L3 à L7 pour l'appeler un MVP.
+  </p>
+
+  <div class="cadre-table">
+    <table>
+      <thead><tr><th>Domaine</th><th>Contenu</th></tr></thead>
+      <tbody>
+        <tr><td class="mot serre">Corpus</td><td>60 fiches, toutes trisyllabiques, 4 champs thématiques, difficulté 1–5 · API, syllabation, définition, exemple en contexte, synonymes, antonymes, mésusage + correction, étymologie, phrase à trou et ses 3 leurres</td></tr>
+        <tr><td class="mot serre">Révision espacée</td><td>SM-2 à 4 notes · paliers 1 min / 10 min · rechute à 40 % de l'intervalle · plafond 365 j · jour logique basculant à 4 h · file plafonnée · quota de nouveaux par jour</td></tr>
+        <tr><td class="mot serre">Exercices</td><td>4 formats en rotation selon l'état de la carte : phrase à compléter, reconnaissance, rappel actif en saisie libre, discrimination d'usage</td></tr>
+        <tr><td class="mot serre">Liste</td><td>Filtres syllabes / difficulté / champ / nature / avancement · recherche plein texte insensible aux accents · 4 tris · fiche en modale</td></tr>
+        <tr><td class="mot serre">Progression</td><td>Mots acquis, rappel sur 30 j, révisions du jour, série · répartition par maturité · charge prévue à 7 jours · mots les plus résistants</td></tr>
+        <tr><td class="mot serre">Accessibilité</td><td>Clavier complet (<kbd>1</kbd>–<kbd>4</kbd>) · <code>aria-live</code> · lien d'évitement · aucune information par la couleur seule · <code>prefers-reduced-motion</code> · taille de texte réglable · thème clair / sombre / système</td></tr>
+        <tr><td class="mot serre">Données</td><td>Export / import JSON · réinitialisation confirmée · bannière si l'écriture échoue · barrière d'erreur racine</td></tr>
+        <tr><td class="mot serre">Qualité</td><td>63 tests (planificateur, texte, stockage, 19 invariants du corpus) · TypeScript strict · build 100 Ko gzip</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ==================================================== 4. CORPUS -->
+  <h2><span class="num">04</span> Produire le corpus : de 60 à 300 fiches</h2>
+  <p class="intro">
+    Le goulot n'est pas la rédaction, c'est la vérification. Une définition plausible mais
+    inexacte est pire que pas de fiche du tout : elle s'apprend.
+  </p>
+
+  <div class="fiche fiche--accent">
+    <h3>4.1 &nbsp;La phonétique ne se génère jamais</h3>
+    <p>
+      <code>api</code>, <code>syllabation</code>, <code>nbSyllabes</code> et
+      <code>categorie</code> doivent venir de <a href="http://www.lexique.org/">Lexique&nbsp;3.83</a>
+      (colonnes <code>phon</code>, <code>syll</code>, <code>nbsyll</code>, <code>cgram</code>),
+      pas d'un modèle. La syllabation y est déjà validée. L'API affichée devient alors une
+      conversion SAMPA&nbsp;→&nbsp;IPA déterministe, testable unitairement.
+    </p>
+  </div>
+
+  <h3>4.2 &nbsp;Sélection des candidats</h3>
+  <p>
+    Filtre sur Lexique : <code>islem == 1</code>, <code>cgram ∈ {NOM, ADJ, VER, ADV}</code>,
+    <code>nbsyll == 3</code>, <code>freqlemlivres ∈ [0.05, 3.0]</code> (ni hapax, ni banal),
+    <code>nblettres ≥ 7</code>, <code>nbhomogr == 1</code>. Puis un score de difficulté
+    reproductible, sur l'échelle Zipf :
+  </p>
+  <pre><code>zipf        = log10(fréquence par million) + 3
+
+s_freq  = clamp((5.0 - zipf_livres) / 2.5)          poids 0.40   rareté
+s_book  = clamp((zipf_livres - zipf_films) / 1.5)   poids 0.15   écart écrit/oral → registre soutenu
+s_len   = clamp((nblettres - 6) / 6)                poids 0.15
+s_syl   = clamp((nbsyll - 2) / 2)                   poids 0.10
+s_opac  = 1.0 si nbmorph ≤ 1 sinon 0.4              poids 0.10   opacité morphologique
+s_kn    = 1 - deflem   (si defobs ≥ 20)             poids 0.10   connaissance déclarée
+
+seuils : &lt;1.8 → 1 · 1.8–2.4 → 2 · 2.4–3.1 → 3 · 3.1–3.8 → 4 · ≥3.8 → 5
+cible  : difficulté 3 à 5</code></pre>
+  <p>
+    <strong>Limite honnête :</strong> Lexique n'a aucun champ de domaine. Exclure le jargon
+    (<em>cotylédon</em>, <em>glycémie</em>) demande une passe supplémentaire — jointure DBnary
+    sur les catégories thématiques du Wiktionnaire, puis classification binaire
+    « culture générale vs jargon ».
+  </p>
+
+  <h3>4.3 &nbsp;Vérification adversariale</h3>
+  <p>La procédure qui a produit les 60 fiches actuelles, et qui tient à l'échelle :</p>
+  <ul class="liste">
+    <li>génération par lots thématiques de 15 ;</li>
+    <li><strong>relecture par un second modèle en posture adversariale</strong> — présumer que
+      chaque entrée est fausse : corriger l'API, recompter les syllabes, vérifier que la
+      définition n'emploie pas le mot, que la construction de l'exemple est juste, qu'aucun
+      distracteur ne conviendrait en fait ;</li>
+    <li>contrôles mécaniques en test — 19 invariants dans <code>corpus.test.ts</code> ;</li>
+    <li>échantillon de 10 % re-vérifié à la main au CNRTL.</li>
+  </ul>
+  <p>
+    Rendement observé sur le premier lot : <strong>60 générées → 58 retenues, 36 corrections
+    appliquées</strong>, dont plusieurs sur le comptage syllabique. Les 19 invariants passent au
+    premier essai après relecture ; ils échouaient avant.
+  </p>
+
+  <h3>4.4 &nbsp;Licences — à trancher avant publication</h3>
+  <div class="cadre-table">
+    <table>
+      <thead><tr><th>Source</th><th>Redistribuable</th><th>Condition</th></tr></thead>
+      <tbody>
+        <tr><td class="mot serre">Lexique 3.83</td><td><span class="et et--oui">oui</span></td><td><strong>CC BY-SA 4.0</strong> — attribution (New, Pallier, Brysbaert &amp; Ferrand, 2004) et partage à l'identique du <em>jeu de données dérivé</em>. Le ShareAlike contamine le corpus, pas le code de l'application.</td></tr>
+        <tr><td class="mot serre">Wiktionnaire / DBnary</td><td><span class="et et--oui">oui</span></td><td>CC BY-SA 4.0 / 3.0 — attribution + partage à l'identique.</td></tr>
+        <tr><td class="mot serre">Morphalou 3.1</td><td><span class="et et--oui">oui</span></td><td>LGPL-LR.</td></tr>
+        <tr><td class="mot serre">TLFi / CNRTL</td><td><span class="et et--non">non</span></td><td>Consultation gratuite ≠ licence de réutilisation. Usage acceptable : vérification manuelle par un relecteur.</td></tr>
+        <tr><td class="mot serre">Le Robert, Larousse</td><td><span class="et et--non">non</span></td><td>CGU explicites et droit <em>sui generis</em> des bases de données (art. L.341-1 CPI). Aucune reprise, même reformulée de près.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Le corpus actuel est <strong>rédigé, pas extrait</strong> : définitions, exemples et mésusages
+    sont originaux, aucune phonétique n'en provient encore. Dès qu'un champ viendra de Lexique,
+    il faudra un <code>LICENCE-DONNEES.md</code> distinct de la licence du code et un écran
+    « Sources » dans les réglages.
+  </p>
+
+  <!-- ====================================================== 5. LOTS -->
+  <h2><span class="num">05</span> Lots jusqu'au MVP</h2>
+  <p class="intro">
+    Chaque critère se répond par oui ou par non. « L'interface est agréable » n'est pas un
+    critère d'acceptation.
+  </p>
+
+  <div class="cadre-table">
+    <table>
+      <thead><tr><th>Lot</th><th>Contenu</th><th>Critère d'acceptation</th><th>Effort</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="num-cell">L0 <span class="et et--ok">fait</span></td>
+          <td>Maquette fonctionnelle : SRS, 4 formats, liste filtrable, progression, thème, audio, export</td>
+          <td><code>npm run build &amp;&amp; npm test</code> passe ; une session complète s'enchaîne sans erreur console</td>
+          <td class="serre">—</td>
+        </tr>
+        <tr>
+          <td class="num-cell">L1 <span class="et et--ok">fait</span></td>
+          <td>Contrat de journal pérenne</td>
+          <td>Un test échoue si <code>etatAvant</code> ou <code>joursEcoules</code> disparaît de <code>LogRevision</code></td>
+          <td class="serre">—</td>
+        </tr>
+        <tr>
+          <td class="num-cell">L2 <span class="et et--ok">fait</span></td>
+          <td>Sauvegarde</td>
+          <td>Exporter → réinitialiser → réimporter rend <code>cartes</code> et <code>logs</code> strictement égaux à l'original</td>
+          <td class="serre">—</td>
+        </tr>
+        <tr>
+          <td class="num-cell">L3</td>
+          <td>Premier lancement</td>
+          <td>Un profil neuf termine une session sans ouvrir les réglages ; l'écran J0 propose 5 mots ; file vide → message, sans bouton qui entamerait le quota de demain</td>
+          <td class="serre">0,5 j</td>
+        </tr>
+        <tr>
+          <td class="num-cell">L4</td>
+          <td><strong>Corpus 300</strong> — chemin critique</td>
+          <td><code>LEXIQUE.length ≥ 300</code> ; 0 échec des 19 invariants ; 0 identifiant dupliqué ; <code>nbSyllabes === 3</code> sur 100 % des entrées ; 10 % re-vérifiés au CNRTL, taux d'erreur du lot &lt; 5 %</td>
+          <td class="serre">6–8 j</td>
+        </tr>
+        <tr>
+          <td class="num-cell">L5</td>
+          <td>Accessibilité</td>
+          <td>Session complète au clavier seul, sans souris ; axe-core : 0 violation « serious » sur les 4 vues ; contraste AA vérifié en clair et en sombre</td>
+          <td class="serre">1 j</td>
+        </tr>
+        <tr>
+          <td class="num-cell">L6</td>
+          <td>PWA</td>
+          <td>Build servi en HTTPS, mode avion, rechargement à froid : l'application démarre et une note est enregistrée</td>
+          <td class="serre">1 j</td>
+        </tr>
+        <tr>
+          <td class="num-cell">L7</td>
+          <td>Déploiement</td>
+          <td>URL publique ; application installée sur un Android et un iPhone ; une session complétée sur chacun, audio testé sur les deux</td>
+          <td class="serre">0,5 j</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="fiche">
+    <h3>Après le MVP</h3>
+    <div class="cadre-table" style="box-shadow:none;margin-bottom:0">
+      <table>
+        <thead><tr><th>№</th><th>Sujet</th><th>Déclencheur</th></tr></thead>
+        <tbody>
+          <tr><td class="num-cell">1</td><td>Bascule FSRS + optimisation locale des poids</td><td>≥ 800 révisions journalisées</td></tr>
+          <tr><td class="num-cell">2</td><td>Exercice de reformulation (périphrase plate → mot juste)</td><td>corpus ≥ 500</td></tr>
+          <tr><td class="num-cell">3</td><td>Collocations : quel verbe s'associe au mot</td><td>demande un champ supplémentaire par fiche</td></tr>
+          <tr><td class="num-cell">4</td><td>Corpus 1 500–2 500 lemmes, thèmes supplémentaires</td><td>usage régulier constaté</td></tr>
+          <tr><td class="num-cell">5</td><td>Synchronisation multi-appareils</td><td>uniquement si le besoin apparaît — impose un backend et fait tomber la décision 04</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="fiche">
+    <h3>Explicitement hors périmètre</h3>
+    <p style="color:var(--texte-3);font-size:0.9rem">
+      Ce qui suit a été envisagé puis écarté. Le lister évite qu'il revienne par la porte de service.
+    </p>
+    <div class="hors-perimetre">
+      <span>optimiseur FSRS en WebAssembly</span>
+      <span>écran de calibrage prédit/observé</span>
+      <span>génération automatique de distracteurs</span>
+      <span>multi-decks et sélecteur</span>
+      <span>MP3 pré-enregistrés</span>
+      <span>dictée</span>
+      <span>production écrite longue</span>
+      <span>correction par LLM</span>
+      <span>comptes utilisateurs</span>
+      <span>classement et gamification</span>
+      <span>notifications push</span>
+    </div>
+  </div>
+
+  <!-- ==================================================== 6. RISQUES -->
+  <h2><span class="num">06</span> Risques</h2>
+
+  <div class="cadre-table">
+    <table>
+      <thead><tr><th>Gravité</th><th>Risque</th><th>Mitigation</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="serre"><span class="et et--crit">critique</span></td>
+          <td>60 mots = 8 jours d'usage, puis l'application est vide</td>
+          <td>Ne pas sortir sous 300 fiches relues (lot L4)</td>
+        </tr>
+        <tr>
+          <td class="serre"><span class="et et--crit">critique</span></td>
+          <td>Perte de progression : <code>localStorage</code> est effaçable par le navigateur, ou par l'utilisateur en vidant les données du site</td>
+          <td>Export déjà disponible ; ajouter un rappel après 7 jours sans export ; appeler <code>navigator.storage.persist()</code></td>
+        </tr>
+        <tr>
+          <td class="serre"><span class="et et--haut">élevé</span></td>
+          <td>Corpus généré = corpus faux. Une définition plausible mais inexacte s'apprend et se retient</td>
+          <td>Relecture adversariale, 19 invariants en test, échantillon manuel de 10 %</td>
+        </tr>
+        <tr>
+          <td class="serre"><span class="et et--haut">élevé</span></td>
+          <td>Abandon par surcharge : 8 nouveaux mots par jour deviennent ~40 révisions quotidiennes en trois semaines</td>
+          <td>Quota et plafond de session en place ; la courbe de charge à 7 jours est affichée précisément pour rendre cet effet visible <em>avant</em> qu'il ne se produise</td>
+        </tr>
+        <tr>
+          <td class="serre"><span class="et et--moyen">moyen</span></td>
+          <td>Aucune voix <code>fr-*</code> sur beaucoup d'Android</td>
+          <td>Bouton désactivé avec libellé explicite, API phonétique toujours affichée ; à tester sur un appareil réel (L7)</td>
+        </tr>
+        <tr>
+          <td class="serre"><span class="et et--moyen">moyen</span></td>
+          <td>CC BY-SA non honorée si des champs viennent de Lexique</td>
+          <td><code>LICENCE-DONNEES.md</code> et écran « Sources » avant toute publication</td>
+        </tr>
+        <tr>
+          <td class="serre"><span class="et et--bas">faible</span></td>
+          <td>Identifiants instables (<code>eluder</code> vs <code>éluder</code>)</td>
+          <td>Règle figée : <code>id = slug ASCII</code>, jamais recalculé ; vérifiée par test</td>
+        </tr>
+        <tr>
+          <td class="serre"><span class="et et--bas">faible</span></td>
+          <td>Horloge reculée par l'utilisateur</td>
+          <td>Écarts bornés par <code>max(0, …)</code> ; le planificateur ne lit jamais l'horloge lui-même</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note-bas">
+    Dépôt : <code>c:\Users\ahoudzi\Documents\docu-fr</code> · démarrage :
+    <code>npm install &amp;&amp; npm run dev</code> · même contenu en Markdown dans
+    <code>docs/PLAN.md</code>.
+  </p>
+
+</div>
+
+</body>
+</html>

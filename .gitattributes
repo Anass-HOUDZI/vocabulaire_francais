@@ -1,0 +1,4 @@
+# Normalisation des fins de ligne : LF dans le dépôt, quel que soit le poste.
+# Sans cela, un même fichier édité sous Windows et sous Linux produit des diffs
+# entiers là où deux lignes ont changé.
+* text=auto eol=lf
