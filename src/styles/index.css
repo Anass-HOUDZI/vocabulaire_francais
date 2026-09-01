@@ -13,47 +13,41 @@
 :root {
   color-scheme: light;
 
-  --fond: #faf7f2;
-  --fond-2: #f2ede4;
+  --fond: #ffffff;
+  --fond-2: #f7f7f7;
   --surface: #ffffff;
-  --surface-2: #f7f4ee;
-  --bordure: #e2dbcf;
-  /* --bordure-forte porte à elle seule la limite visible des boutons et des
-     champs : le fond d'une carte et celui de la page ne diffèrent que de 1,03:1.
-     Elle est donc soumise au critère WCAG 1.4.11 (3:1), pas au libre choix
-     esthétique. --bordure, elle, ne sert que des filets décoratifs. */
-  --bordure-forte: #8f887c;
+  --surface-2: #f3f4f6;
+  --bordure: #e5e5e5;
+  --bordure-forte: #cecece;
 
-  --texte: #22201d;
-  --texte-2: #57524a;
-  /* Sert des libellés en 0.72rem, donc du texte normal au sens WCAG : 4.5:1 exigé
-     y compris sur --surface-2, le fond le plus clair sur lequel il apparaît. */
-  --texte-3: #6b6459;
+  --texte: #4b4b4b;
+  --texte-2: #777777;
+  --texte-3: #afafaf;
 
-  --accent: #8a3d2e;
-  --accent-fort: #6e2f23;
-  --accent-doux: #f4e6e1;
+  --accent: #58cc02;
+  --accent-fort: #58a700;
+  --accent-doux: #d7ffb8;
   --accent-contraste: #ffffff;
 
-  --succes: #1f6b45;
-  --succes-doux: #e2f0e8;
-  --erreur: #a32b25;
-  --erreur-doux: #f8e5e3;
-  --alerte: #8a6116;
-  --alerte-doux: #f7ecd6;
-  --info: #2b5578;
-  --info-doux: #e3ecf4;
+  --succes: #58cc02;
+  --succes-doux: #d7ffb8;
+  --erreur: #ff4b4b;
+  --erreur-doux: #ffdfe0;
+  --alerte: #ffc800;
+  --alerte-doux: #fff1b8;
+  --info: #1cb0f6;
+  --info-doux: #dff1ff;
 
-  --ombre: 0 1px 2px rgb(34 32 29 / 6%), 0 4px 16px rgb(34 32 29 / 6%);
-  --ombre-forte: 0 2px 6px rgb(34 32 29 / 10%), 0 12px 32px rgb(34 32 29 / 12%);
+  --ombre: 0 4px 0 rgb(229 229 229);
+  --ombre-forte: 0 8px 0 rgb(206 206 206);
 
-  --rayon: 10px;
-  --rayon-lg: 16px;
+  --rayon: 16px;
+  --rayon-lg: 24px;
   --echelle-texte: 1;
 
-  --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
-  --sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Menlo, Consolas, monospace;
+  --serif: "Nunito", "Varela Round", ui-rounded, sans-serif;
+  --sans: "Nunito", "Varela Round", ui-rounded, system-ui, sans-serif;
+  --mono: ui-monospace, monospace;
 
   --largeur: 62rem;
 }
@@ -261,30 +255,37 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* -------------------------------------------------------------- Boutons */
 
 .btn {
-  border: 1px solid var(--bordure-forte);
+  border: 2px solid var(--bordure-forte);
+  border-bottom-width: 4px;
   background: var(--surface);
   color: var(--texte);
   border-radius: var(--rayon);
-  padding: 0.55rem 0.95rem;
+  padding: 0.75rem 1.25rem;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  transition: background 0.14s, border-color 0.14s, transform 0.08s;
+  transition: all 0.1s ease;
 }
 .btn:hover { background: var(--surface-2); }
-.btn:active { transform: translateY(1px); }
-.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn:active { 
+  transform: translateY(2px); 
+  border-bottom-width: 2px;
+  margin-bottom: 2px;
+}
+.btn:disabled { opacity: 0.45; cursor: not-allowed; border-bottom-width: 2px; transform: translateY(2px); }
 
 .btn--principal {
   background: var(--accent);
-  border-color: var(--accent);
+  border-color: var(--accent-fort);
   color: var(--accent-contraste);
-  font-weight: 600;
 }
-.btn--principal:hover { background: var(--accent-fort); border-color: var(--accent-fort); }
+.btn--principal:hover { background: var(--accent-fort); border-color: var(--accent-fort); filter: brightness(1.1); }
 
 .btn--discret { border-color: transparent; background: transparent; color: var(--texte-2); }
 .btn--discret:hover { background: var(--surface-2); color: var(--texte); }
@@ -295,16 +296,17 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .carte {
   background: var(--surface);
-  border: 1px solid var(--bordure);
+  border: 2px solid var(--bordure-forte);
+  border-bottom-width: 4px;
   border-radius: var(--rayon-lg);
-  box-shadow: var(--ombre);
+  box-shadow: none; /* Duolingo cards use borders, not blurry shadows */
 }
 
 .section-titre {
-  font-family: var(--serif);
-  font-size: 1.15rem;
-  margin: 0 0 0.75rem;
-  font-weight: 600;
+  font-family: var(--sans);
+  font-size: 1.5rem;
+  margin: 0 0 1rem;
+  font-weight: 800;
 }
 
 /* ----------------------------------------------------------- Révision */
@@ -322,16 +324,17 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .jauge {
   flex: 1;
-  height: 6px;
+  height: 16px;
   background: var(--fond-2);
   border-radius: 999px;
   overflow: hidden;
-  border: 1px solid var(--bordure);
+  border: 2px solid var(--bordure);
 }
 .jauge__remplissage {
   height: 100%;
   background: var(--accent);
-  transition: width 0.3s ease;
+  border-radius: 999px;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .exercice { padding: 1.5rem; }
@@ -371,79 +374,95 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .trou--rempli { border-bottom-style: solid; }
 
-.options { display: grid; gap: 0.55rem; }
+.options { display: grid; gap: 0.75rem; }
 
 .option {
   text-align: left;
-  border: 1px solid var(--bordure-forte);
+  border: 2px solid var(--bordure-forte);
+  border-bottom-width: 4px;
   background: var(--surface);
   border-radius: var(--rayon);
-  padding: 0.8rem 1rem;
+  padding: 1rem 1.25rem;
   cursor: pointer;
   display: flex;
   align-items: flex-start;
   gap: 0.7rem;
   line-height: 1.45;
-  transition: background 0.12s, border-color 0.12s;
+  transition: all 0.1s ease;
+  font-weight: 600;
 }
 .option:hover:not(:disabled) { background: var(--surface-2); border-color: var(--accent); }
+.option:active:not(:disabled) {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+  margin-bottom: 2px;
+}
 .option:disabled { cursor: default; }
 
 .option__touche {
   flex: 0 0 auto;
   width: 1.6rem; height: 1.6rem;
-  border: 1px solid var(--bordure-forte);
-  border-radius: 6px;
+  border: 2px solid var(--bordure-forte);
+  border-radius: 8px;
   display: grid;
   place-items: center;
   font-size: 0.78rem;
   font-family: var(--mono);
   color: var(--texte-3);
+  font-weight: bold;
 }
 
 .option--juste {
-  border-color: var(--succes);
+  border-color: var(--succes-doux);
   background: var(--succes-doux);
+  color: var(--succes);
 }
 .option--juste .option__touche { border-color: var(--succes); color: var(--succes); }
 
 .option--faux {
-  border-color: var(--erreur);
+  border-color: var(--erreur-doux);
   background: var(--erreur-doux);
+  color: var(--erreur);
 }
 .option--faux .option__touche { border-color: var(--erreur); color: var(--erreur); }
 
 .saisie {
   width: 100%;
-  padding: 0.8rem 1rem;
-  border: 1px solid var(--bordure-forte);
+  padding: 1rem 1.25rem;
+  border: 2px solid var(--bordure-forte);
+  border-bottom-width: 4px;
   border-radius: var(--rayon);
   background: var(--surface);
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .accents { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
 .accents button {
-  border: 1px solid var(--bordure);
+  border: 2px solid var(--bordure-forte);
+  border-bottom-width: 4px;
   background: var(--surface-2);
-  border-radius: 6px;
-  padding: 0.25rem 0.55rem;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
   cursor: pointer;
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-size: 0.95rem;
+  font-weight: bold;
 }
 .accents button:hover { border-color: var(--accent); }
+.accents button:active { transform: translateY(2px); border-bottom-width: 2px; margin-bottom: 2px; }
 
 .verdict {
   margin-top: 1rem;
-  padding: 0.75rem 1rem;
+  padding: 1rem 1.25rem;
   border-radius: var(--rayon);
   display: flex;
   gap: 0.6rem;
   align-items: flex-start;
-  font-size: 0.95rem;
-  border: 1px solid;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: 2px solid;
 }
 .verdict--juste { background: var(--succes-doux); border-color: var(--succes); color: var(--succes); }
 .verdict--faux { background: var(--erreur-doux); border-color: var(--erreur); color: var(--erreur); }
@@ -452,25 +471,29 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .notes {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
+  gap: 0.75rem;
   margin-top: 1.15rem;
 }
 .note-btn {
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
-  padding: 0.6rem 0.4rem;
-  border: 1px solid var(--bordure-forte);
+  padding: 0.8rem 0.4rem;
+  border: 2px solid var(--bordure-forte);
+  border-bottom-width: 4px;
   background: var(--surface);
   border-radius: var(--rayon);
   cursor: pointer;
-  font-size: 0.88rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  transition: all 0.1s ease;
 }
 .note-btn:hover { border-color: var(--accent); background: var(--surface-2); }
-.note-btn small { color: var(--texte-3); font-size: 0.75rem; font-family: var(--mono); }
+.note-btn:active { transform: translateY(2px); border-bottom-width: 2px; margin-bottom: 2px; }
+.note-btn small { color: var(--texte-3); font-size: 0.8rem; font-family: var(--sans); font-weight: normal; }
 .note-btn kbd {
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   color: var(--texte-3);
 }
 

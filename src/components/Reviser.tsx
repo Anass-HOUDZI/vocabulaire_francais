@@ -5,7 +5,6 @@ import { useSynthese } from '../hooks/useSynthese'
 import { apercuIntervalles, fileDuJour, formaterDelai, prochaineEcheance } from '../lib/srs'
 import { construireExercice } from '../lib/exercices'
 import { LIBELLE_NOTE, type Note } from '../types'
-import Accueil from './Accueil'
 import CarteExercice, { type Reponse } from './CarteExercice'
 import FicheMot from './FicheMot'
 
@@ -36,8 +35,7 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
   const [demarree, setDemarree] = useState(false)
   const repassages = useRef<Record<string, number>>({})
 
-  /** Aucune révision journalisée : c'est la toute première ouverture. */
-  const premiereOuverture = etat.logs.length === 0
+  /** fileDuJour sera appelé au montage pour démarrer la session */
 
   const demarrer = useCallback(
     (limiteNouveaux?: number) => {
@@ -62,9 +60,7 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
   )
 
   useEffect(() => {
-    // À la première ouverture on affiche d'abord l'écran d'accueil ; ailleurs on
-    // enchaîne directement, l'utilisateur sait ce qu'il vient faire.
-    if (!premiereOuverture) demarrer()
+    demarrer()
     // Une seule construction de file au montage.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -148,8 +144,8 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
 
   /* ----------------------------------------------------------- Rendus */
 
-  if (!demarree && premiereOuverture) {
-    return <Accueil onCommencer={demarrer} onOuvrirLexique={onOuvrirLexique} />
+  if (!demarree) {
+    return null
   }
 
   if (!file.length) {

@@ -1,20 +1,23 @@
 import { useEffect, useMemo, useState } from 'react'
+import Accueil from './components/Accueil'
 import Entete from './components/Entete'
 import Reviser from './components/Reviser'
 import Lexique from './components/Lexique'
 import Progression from './components/Progression'
 import Reglages from './components/Reglages'
+import Legales from './components/Legales'
+import Contacts from './components/Contacts'
 import { useApp } from './store/AppContext'
 import { fileDuJour } from './lib/srs'
 
-export type Onglet = 'reviser' | 'lexique' | 'progression' | 'reglages'
+export type Onglet = 'accueil' | 'reviser' | 'lexique' | 'progression' | 'reglages' | 'legales' | 'contacts'
 
-const ONGLETS_VALIDES: Onglet[] = ['reviser', 'lexique', 'progression', 'reglages']
+const ONGLETS_VALIDES: Onglet[] = ['accueil', 'reviser', 'lexique', 'progression', 'reglages', 'legales', 'contacts']
 
 /** Lit l'onglet dans le fragment d'URL — suffisant tant qu'il n'y a pas de route paramétrée. */
 function ongletDepuisUrl(): Onglet {
   const h = window.location.hash.replace('#', '') as Onglet
-  return ONGLETS_VALIDES.includes(h) ? h : 'reviser'
+  return ONGLETS_VALIDES.includes(h) ? h : 'accueil'
 }
 
 const MESSAGE_SAUVEGARDE: Record<string, string> = {
@@ -53,7 +56,7 @@ export default function App() {
         Aller au contenu
       </a>
 
-      <Entete onglet={onglet} onChange={setOnglet} aReviser={aReviser} />
+      <Entete onChange={setOnglet} aReviser={aReviser} />
 
       <main className="contenu" id="contenu" tabIndex={-1}>
         {etatSauvegarde !== 'ok' && (
@@ -63,10 +66,13 @@ export default function App() {
           </p>
         )}
 
+        {onglet === 'accueil' && <Accueil onCommencer={() => setOnglet('reviser')} onOuvrirLexique={() => setOnglet('lexique')} />}
         {onglet === 'reviser' && <Reviser onOuvrirLexique={() => setOnglet('lexique')} />}
         {onglet === 'lexique' && <Lexique />}
         {onglet === 'progression' && <Progression />}
         {onglet === 'reglages' && <Reglages />}
+        {onglet === 'legales' && <Legales />}
+        {onglet === 'contacts' && <Contacts />}
       </main>
     </div>
   )
