@@ -111,6 +111,13 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
         setFile((f) => [...f, motId])
       }
 
+      if (note === 3) {
+        import('canvas-confetti').then((m) => {
+          m.default({ particleCount: 100, spread: 80, origin: { y: 0.6 }, colors: ['#FFD700', '#FFA500'] })
+        })
+        import('../lib/sounds').then((m) => m.playSound('perfect'))
+      }
+
       setReponse(null)
       setIndex((i) => i + 1)
     },
@@ -251,7 +258,18 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
               exercice={exercice}
               accentsStricts={etat.reglages.accentsStricts}
               reponse={reponse}
-              onRepondre={setReponse}
+              onRepondre={(rep) => {
+                setReponse(rep)
+                if (rep.reussi) {
+                  import('canvas-confetti').then((m) => {
+                    const confetti = m.default
+                    confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 }, colors: ['#4CAF50', '#8BC34A'] })
+                  })
+                  import('../lib/sounds').then((m) => m.playSound('success'))
+                } else {
+                  // Optionnel: son d'erreur léger
+                }
+              }}
             />
             {reponse && (
               <div style={{ borderTop: '1px solid var(--bordure)' }}>

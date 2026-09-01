@@ -8,6 +8,28 @@
  * une fois publiée, sous peine de perdre la progression associée.
  */
 
+export interface JoueurProgression {
+  xp: number
+  niveau: number
+  serieJours: number
+  dernierJourEtude: string | null
+  gelDeSerie: number
+  monnaie: number
+  badges: string[]
+  parfaitConsecutif: number
+}
+
+export const PROGRESSION_DEFAUT: JoueurProgression = {
+  xp: 0,
+  niveau: 1,
+  serieJours: 0,
+  dernierJourEtude: null,
+  gelDeSerie: 0,
+  monnaie: 0,
+  badges: [],
+  parfaitConsecutif: 0,
+}
+
 export type Difficulte = 1 | 2 | 3 | 4 | 5
 
 export interface Cloze {
@@ -145,6 +167,7 @@ export interface EtatPersiste {
   reglages: Reglages
   /** Compteur de nouvelles cartes introduites, par jour logique (`AAAA-MM-JJ`). */
   nouveauxParJourLogique: Record<string, number>
+  progression: JoueurProgression
 }
 
 /* ---------------------------------------------------------- Exercices */

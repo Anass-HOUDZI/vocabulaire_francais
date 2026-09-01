@@ -14,7 +14,7 @@
  */
 
 import type { Carte, EtatPersiste, Reglages } from '../types'
-import { REGLAGES_DEFAUT } from '../types'
+import { REGLAGES_DEFAUT, PROGRESSION_DEFAUT } from '../types'
 
 const CLE = 'lexique.etat.v1'
 const CLE_THEME = 'lexique.theme'
@@ -38,6 +38,7 @@ export function etatVide(): EtatPersiste {
     logs: [],
     reglages: { ...REGLAGES_DEFAUT },
     nouveauxParJourLogique: {},
+    progression: { ...PROGRESSION_DEFAUT },
   }
 }
 
@@ -60,6 +61,7 @@ function migrer(brut: unknown): EtatPersiste {
       e.nouveauxParJourLogique && typeof e.nouveauxParJourLogique === 'object'
         ? e.nouveauxParJourLogique
         : {},
+    progression: { ...base.progression, ...(e.progression ?? {}) },
   }
 }
 

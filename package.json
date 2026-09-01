@@ -14,11 +14,15 @@
     "icons": "node scripts/generer-icones.mjs"
   },
   "dependencies": {
+    "canvas-confetti": "^1.9.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-confetti": "^6.4.0",
+    "react-dom": "^19.0.0",
+    "react-use": "^17.6.1"
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.3",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^26.4.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

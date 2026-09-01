@@ -6,7 +6,7 @@ import { PAR_ID } from '../data/lexique'
 const JOURS_COURTS = ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.']
 
 export default function Progression() {
-  const { etat } = useApp()
+  const { etat, acheterGel } = useApp()
 
   const stats = useMemo(
     () => calculerStatistiques(Object.values(etat.cartes), etat.logs, Date.now()),
@@ -36,8 +36,48 @@ export default function Progression() {
   return (
     <section aria-labelledby="titre-progression">
       <h2 id="titre-progression" className="section-titre">
-        Progression
+        Progression & Joueur
       </h2>
+
+      {etat.progression && (
+        <div className="carte" style={{ padding: '1.25rem', marginBottom: '1.5rem', background: 'var(--arriere-plan)', border: '1px solid var(--bordure-forte)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--principal)' }}>Niveau {etat.progression.niveau}</h3>
+              <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--texte-2)' }}>{etat.progression.xp} XP au total</p>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#FFD700' }}>🪙 {etat.progression.monnaie}</span>
+              <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--texte-2)' }}>Gels disponibles : {etat.progression.gelDeSerie}</p>
+            </div>
+          </div>
+          <div className="jauge" style={{ height: '8px', marginBottom: '1rem' }}>
+            <div className="jauge__remplissage" style={{ width: `${(etat.progression.xp % 100)}%`, background: 'var(--principal)' }} />
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button 
+              className="btn btn--principal" 
+              onClick={acheterGel} 
+              disabled={etat.progression.monnaie < 100}
+              style={{ fontSize: '0.85rem' }}
+            >
+              Acheter Gel (100 🪙)
+            </button>
+          </div>
+          {etat.progression.badges.length > 0 && (
+            <div style={{ marginTop: '1rem' }}>
+              <strong style={{ fontSize: '0.85rem', color: 'var(--texte-2)', textTransform: 'uppercase' }}>Badges obtenus :</strong>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.4rem' }}>
+                {etat.progression.badges.map(b => (
+                  <span key={b} style={{ background: 'var(--info)', color: 'white', padding: '0.2rem 0.5rem', borderRadius: '1rem', fontSize: '0.8rem' }}>
+                    {b === 'parfait' ? '🌟 Parfait' : b === 'oiseau-de-nuit' ? '🦉 Oiseau de nuit' : b}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="grille-stats">
         <div className="stat">

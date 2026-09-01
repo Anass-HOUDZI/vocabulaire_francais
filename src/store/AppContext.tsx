@@ -33,6 +33,7 @@ type Action =
   | { type: 'reglages'; valeurs: Partial<Reglages> }
   | { type: 'remplacer'; etat: EtatPersiste }
   | { type: 'reinitialiser' }
+  | { type: 'acheterGel' }
 
 /** Garantit une carte pour chaque mot du lexique, sans toucher aux cartes existantes. */
 function synchroniserAvecLexique(etat: EtatPersiste, maintenant: number): EtatPersiste {
@@ -62,9 +63,37 @@ function reducteur(etat: EtatPersiste, action: Action): EtatPersiste {
         compteurs[jour] = (compteurs[jour] ?? 0) + 1
       }
 
+      const xpGagne = action.note === 3 ? 15 : action.note === 2 ? 10 : action.note === 1 ? 5 : 2
+      const nouvelleXp = (etat.progression?.xp ?? 0) + xpGagne
+      const nouveauNiveau = Math.floor(Math.sqrt(nouvelleXp / 100)) + 1
+      const nouvelleMonnaie = (etat.progression?.monnaie ?? 0) + (action.note > 0 ? 1 : 0)
+
+      const parfaitCons = action.note > 0 ? (etat.progression?.parfaitConsecutif ?? 0) + 1 : 0
+      const badges = new Set(etat.progression?.badges ?? [])
+      if (parfaitCons >= 10) badges.add('parfait')
+      if (new Date(action.maintenant).getHours() >= 22) badges.add('oiseau-de-nuit')
+
+      let serie = etat.progression?.serieJours ?? 0
+      const dernierJour = etat.progression?.dernierJourEtude
+      if (dernierJour !== jour) {
+        serie += 1 
+      }
+
+      const progression = {
+        ...(etat.progression ?? {}),
+        xp: nouvelleXp,
+        niveau: nouveauNiveau,
+        monnaie: nouvelleMonnaie,
+        parfaitConsecutif: parfaitCons,
+        badges: Array.from(badges),
+        dernierJourEtude: jour,
+        serieJours: serie,
+      }
+
       return {
         ...etat,
         cartes: { ...etat.cartes, [action.motId]: apres },
+        progression,
         logs: [
           ...etat.logs,
           {
@@ -100,6 +129,21 @@ function reducteur(etat: EtatPersiste, action: Action): EtatPersiste {
     case 'remplacer':
       return action.etat
 
+    case 'acheterGel': {
+      if (!etat.progression) return etat
+      if (etat.progression.monnaie >= 100) {
+        return {
+          ...etat,
+          progression: {
+            ...etat.progression,
+            monnaie: etat.progression.monnaie - 100,
+            gelDeSerie: etat.progression.gelDeSerie + 1,
+          },
+        }
+      }
+      return etat
+    }
+
     case 'reinitialiser': {
       const vierge: Record<string, Carte> = {}
       for (const mot of LEXIQUE) vierge[mot.id] = creerCarte(mot.id, 0)
@@ -115,6 +159,7 @@ interface Contexte {
   majReglages: (valeurs: Partial<Reglages>) => void
   remplacer: (etat: EtatPersiste) => void
   reinitialiser: () => void
+  acheterGel: () => void
   /** Nouveaux mots encore autorisés aujourd'hui, selon le quota. */
   nouveauxRestants: number
   /** Dernier résultat d'écriture : l'interface doit alerter si ce n'est pas « ok ». */
@@ -170,6 +215,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   )
   const remplacer = useCallback((e: EtatPersiste) => dispatch({ type: 'remplacer', etat: e }), [])
   const reinitialiser = useCallback(() => dispatch({ type: 'reinitialiser' }), [])
+  const acheterGel = useCallback(() => dispatch({ type: 'acheterGel' }), [])
 
   const nouveauxRestants = useMemo(() => {
     const jour = jourLogique(Date.now())
@@ -184,10 +230,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       majReglages,
       remplacer,
       reinitialiser,
+      acheterGel,
       nouveauxRestants,
       etatSauvegarde,
     }),
-    [etat, noter, suspendre, majReglages, remplacer, reinitialiser, nouveauxRestants, etatSauvegarde],
+    [etat, noter, suspendre, majReglages, remplacer, reinitialiser, acheterGel, nouveauxRestants, etatSauvegarde],
   )
 
   return <AppContext.Provider value={valeur}>{children}</AppContext.Provider>
