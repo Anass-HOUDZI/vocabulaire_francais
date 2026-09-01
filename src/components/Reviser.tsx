@@ -2,9 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { LEXIQUE, PAR_ID } from '../data/lexique'
 import { useApp } from '../store/AppContext'
 import { useSynthese } from '../hooks/useSynthese'
-import { apercuIntervalles, fileDuJour } from '../lib/srs'
+import { apercuIntervalles, fileDuJour, formaterDelai, prochaineEcheance } from '../lib/srs'
 import { construireExercice } from '../lib/exercices'
 import { LIBELLE_NOTE, type Note } from '../types'
+import Accueil from './Accueil'
 import CarteExercice, { type Reponse } from './CarteExercice'
 import FicheMot from './FicheMot'
 
@@ -32,27 +33,38 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
   const [index, setIndex] = useState(0)
   const [reponse, setReponse] = useState<Reponse | null>(null)
   const [bilan, setBilan] = useState({ vus: 0, justes: 0 })
+  const [demarree, setDemarree] = useState(false)
   const repassages = useRef<Record<string, number>>({})
 
-  const demarrer = useCallback(() => {
-    const cartes = Object.values(etat.cartes)
-    const selection = fileDuJour(cartes, Date.now(), {
-      nouveauxRestants,
-      maxParSession: etat.reglages.maxParSession,
-    })
-    repassages.current = {}
-    setFile(selection.map((c) => c.motId))
-    setIndex(0)
-    setReponse(null)
-    setBilan({ vus: 0, justes: 0 })
-    // `etat.cartes` est volontairement absent des dépendances : la file est
-    // figée au démarrage de la session, sinon chaque notation la recalculerait
-    // et ferait sauter la carte courante.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [etat.reglages.maxParSession, nouveauxRestants])
+  /** Aucune révision journalisée : c'est la toute première ouverture. */
+  const premiereOuverture = etat.logs.length === 0
+
+  const demarrer = useCallback(
+    (limiteNouveaux?: number) => {
+      const cartes = Object.values(etat.cartes)
+      const selection = fileDuJour(cartes, Date.now(), {
+        nouveauxRestants:
+          limiteNouveaux === undefined ? nouveauxRestants : Math.min(limiteNouveaux, nouveauxRestants),
+        maxParSession: etat.reglages.maxParSession,
+      })
+      repassages.current = {}
+      setFile(selection.map((c) => c.motId))
+      setIndex(0)
+      setReponse(null)
+      setBilan({ vus: 0, justes: 0 })
+      setDemarree(true)
+      // `etat.cartes` est volontairement absent des dépendances : la file est
+      // figée au démarrage de la session, sinon chaque notation la recalculerait
+      // et ferait sauter la carte courante.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [etat.reglages.maxParSession, nouveauxRestants],
+  )
 
   useEffect(() => {
-    demarrer()
+    // À la première ouverture on affiche d'abord l'écran d'accueil ; ailleurs on
+    // enchaîne directement, l'utilisateur sait ce qu'il vient faire.
+    if (!premiereOuverture) demarrer()
     // Une seule construction de file au montage.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -129,7 +141,12 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
 
   /* ----------------------------------------------------------- Rendus */
 
+  if (!demarree && premiereOuverture) {
+    return <Accueil onCommencer={demarrer} onOuvrirLexique={onOuvrirLexique} />
+  }
+
   if (!file.length) {
+    const echeance = prochaineEcheance(Object.values(etat.cartes), Date.now())
     return (
       <div className="carte vide">
         <p className="vide__icone" aria-hidden="true">
@@ -137,8 +154,24 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
         </p>
         <h2>Rien à réviser pour le moment</h2>
         <p>
-          Votre file du jour est vide. C'est le fonctionnement normal de la répétition espacée :
-          revenez demain, ou augmentez le nombre de mots nouveaux par jour dans les réglages.
+          {echeance !== null ? (
+            <>
+              Prochaine carte à revoir dans <strong>{formaterDelai(echeance - Date.now())}</strong>.
+            </>
+          ) : (
+            <>Aucune carte n'est programmée.</>
+          )}
+          {nouveauxRestants === 0 && (
+            <>
+              {' '}
+              Votre quota de mots nouveaux est épuisé pour aujourd'hui.
+            </>
+          )}
+        </p>
+        <p style={{ color: 'var(--texte-3)', fontSize: '0.9rem', maxWidth: '32rem', margin: '0.6rem auto 0' }}>
+          C'est le fonctionnement normal de la répétition espacée : réviser plus tôt qu'il ne faut
+          n'améliore pas la mémorisation, cela ne fait qu'alourdir les jours suivants. Pour avancer
+          plus vite, relevez le quota quotidien dans les réglages — en connaissance de cause.
         </p>
         <p style={{ marginTop: '1.2rem' }}>
           <button type="button" className="btn" onClick={onOuvrirLexique}>
@@ -162,7 +195,8 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
           rappel réussi.
         </p>
         <p style={{ marginTop: '1.2rem', display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
-          <button type="button" className="btn btn--principal" onClick={demarrer}>
+          {/* Sans la lambda, l'événement de clic partirait en `limiteNouveaux`. */}
+          <button type="button" className="btn btn--principal" onClick={() => demarrer()}>
             Nouvelle session
           </button>
           <button type="button" className="btn" onClick={onOuvrirLexique}>

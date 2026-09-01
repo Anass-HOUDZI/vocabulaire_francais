@@ -236,6 +236,34 @@ export default function Reglages() {
           </p>
         )}
       </div>
+
+      <h3 className="section-titre" style={{ marginTop: '1.5rem' }}>
+        Sources
+      </h3>
+
+      <div className="carte" style={{ padding: '1.25rem' }}>
+        <p className="reglage__desc" style={{ marginTop: 0, marginBottom: '0.6rem' }}>
+          La prononciation (transcription API, découpe syllabique) de chaque mot provient de la
+          base{' '}
+          <a href="http://www.lexique.org/" target="_blank" rel="noreferrer">
+            Lexique 3.83
+          </a>{' '}
+          (New, Pallier, Brysbaert &amp; Ferrand, 2004), distribuée sous licence{' '}
+          <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr"
+            target="_blank"
+            rel="noreferrer"
+          >
+            CC BY-SA 4.0
+          </a>
+          . Aucune phonétique n'est générée : c'est une règle vérifiée par les tests du projet.
+        </p>
+        <p className="reglage__desc" style={{ marginBottom: 0 }}>
+          Définitions, exemples, mésusages et exercices sont des contenus originaux, rédigés puis
+          relus de façon contradictoire — jamais extraits d'un dictionnaire sous droits. Détail
+          complet dans <code>LICENCE-DONNEES.md</code> à la racine du projet.
+        </p>
+      </div>
     </section>
   )
 }

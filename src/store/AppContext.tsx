@@ -143,6 +143,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     memoriserTheme(etat.reglages.theme)
   }, [etat.reglages.theme])
 
+  // `index.html` porte déjà `lang="fr"`, mais le fixer aussi ici rend la racine
+  // du document correcte (WCAG 3.1.1) même quand l'arbre React est monté seul —
+  // c'est le cas des tests d'accessibilité, et potentiellement d'une intégration
+  // future dans une page hôte qui ne connaît pas la langue du contenu.
+  useEffect(() => {
+    document.documentElement.lang = 'fr'
+  }, [])
+
   useEffect(() => {
     document.documentElement.style.setProperty('--echelle-texte', String(etat.reglages.echelleTexte))
   }, [etat.reglages.echelleTexte])

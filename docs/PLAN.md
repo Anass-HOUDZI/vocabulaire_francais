@@ -1,8 +1,11 @@
 # Lexique — cadre, décisions, plan jusqu'au MVP
 
-> État au 31/08/2026. Une maquette fonctionnelle est déjà dans le dépôt : 60 fiches,
-> quatre formats d'exercice, révision espacée, mode sombre, audio, 63 tests verts.
-> Ce document fixe ce qui est décidé, ce qui est coupé, et ce qui reste à faire.
+> État au 01/09/2026. Le MVP est fonctionnellement complet dans le dépôt : 333 fiches
+> (le seuil de 300 est franchi), quatre formats d'exercice, révision espacée, mode
+> sombre, audio, PWA installable, 164 tests verts dont accessibilité et contraste.
+> Ce document fixe ce qui est décidé, ce qui est coupé, et ce qui reste à faire —
+> il ne reste plus qu'une bascule manuelle (GitHub Pages) et une validation sur
+> deux appareils physiques.
 
 ---
 
@@ -78,7 +81,7 @@ retour.
 | # | Décision | Retenu | Rejeté | Raison |
 |---|---|---|---|---|
 | 1 | Stack | React 19 + TypeScript + Vite | SvelteKit, Next.js, Astro | Aucun besoin de SSR ni de routes ; l'écosystème et la familiarité l'emportent. Next.js apporterait un serveur pour une app sans backend. |
-| 2 | Planificateur | SM-2 maison, 4 notes, ~150 lignes, testé | FSRS via `ts-fsrs` | FSRS est meilleur, mais 60 mots ne calibrent rien et SM-2 est écrit et couvert par 22 tests. **Contrepartie assumée : `LogRevision` enregistre déjà `etatAvant` et `joursEcoules`, les champs qu'un optimiseur FSRS exigera.** Sans eux la bascule serait impossible rétroactivement. |
+| 2 | Planificateur | SM-2 maison, 4 notes, ~150 lignes, testé | FSRS via `ts-fsrs` | FSRS est meilleur, mais sans historique de révisions journalisées il n'a rien à calibrer — le nombre de mots du corpus n'y change rien, c'est le nombre de révisions *effectuées* qui compte. SM-2 est écrit et couvert par 22 tests. **Contrepartie assumée : `LogRevision` enregistre déjà `etatAvant` et `joursEcoules`, les champs qu'un optimiseur FSRS exigera.** Sans eux la bascule serait impossible rétroactivement. |
 | 3 | Persistance | `localStorage`, historique **jamais tronqué** | IndexedDB / Dexie | Quelques centaines de Ko, API synchrone, zéro dépendance. Tronquer l'historique reviendrait à renoncer à la décision 2. Bascule prévue si l'usage dépasse ~10 000 révisions. |
 | 4 | État global | `useReducer` + contexte | Zustand, Redux | Un seul objet sérialisable, transitions déclenchées par l'utilisateur seul. Seuil de bascule : écritures concurrentes (synchronisation, onglets multiples). |
 | 5 | Navigation | 4 onglets via `location.hash` | React Router | Quatre écrans sans paramètre. Conséquence assumée : pas d'URL partageable vers une fiche. |
@@ -87,7 +90,7 @@ retour.
 | 8 | Accents | Tolérés en saisie, **signalés**, mode strict optionnel | Refus strict par défaut | Sur mobile, saisir « é » coûte un appui long : refuser transformerait un exercice de lexique en exercice de clavier. |
 | 9 | Distracteurs | Écrits à la main dans le corpus, un jeu par phrase | Génération par embeddings / fréquence | Un leurre écrit pour *cette* phrase bat n'importe quelle heuristique. Le coût est reporté sur la production du corpus, où il est assumé. |
 | 10 | Langue de l'interface | Français en dur, aucune couche i18n | `react-i18next` | Décision explicite, à écrire, sinon quelqu'un l'ajoutera « au cas où ». |
-| 11 | PWA / offline | **Hors MVP** | `vite-plugin-pwa` au MVP | Reporté au lot L6. Note : le service worker exigera de passer `base` de `'./'` à un chemin absolu — un SW en base relative ne contrôle rien. |
+| 11 | PWA / offline | ✅ `vite-plugin-pwa`, fait au lot L6 | Report à la v2 | `base` passé de `'./'` à `'/vocabulaire_fran-ais/'` (absolu) : un SW en base relative ne contrôle rien. Icônes générées sans dépendance de dessin (`scripts/generer-icones.mjs`, encodeur PNG minimal). |
 | 12 | Télémétrie | Aucune. Zéro requête réseau à l'exécution | — | Cohérent avec le fonctionnement hors ligne. |
 
 ---
@@ -96,16 +99,20 @@ retour.
 
 | Domaine | État |
 |---|---|
-| Corpus | 60 fiches, **toutes trisyllabiques**, 4 champs thématiques, difficulté 1–5, API, syllabation, définition, exemple, synonymes, antonymes, mésusage + correction, étymologie, phrase à trou et ses 3 leurres |
+| Corpus | **333 fiches**, toutes trisyllabiques, 4 champs thématiques, difficulté 1–5 calculée depuis les fréquences Lexique, API/syllabation dérivées de Lexique (jamais générées), définition, exemple, synonymes, antonymes, mésusage + correction, étymologie, phrase à trou et ses 3 leurres |
 | Révision espacée | SM-2 à 4 notes, paliers d'apprentissage 1 min / 10 min, rechute à 40 % de l'intervalle, plafond 365 j, jour logique basculant à 4 h, file plafonnée, quota de nouveaux/jour |
 | Exercices | 4 formats en rotation selon l'état de la carte : phrase à compléter, reconnaissance, rappel actif en saisie libre, discrimination d'usage |
+| Premier lancement | Écran d'accueil dédié (5 mots), file vide affichant l'échéance réelle plutôt qu'un message générique |
 | Liste | Filtres syllabes / difficulté / champ / nature / avancement, recherche plein texte, 4 tris, fiche en modale |
 | Progression | Mots acquis, rappel sur 30 j, révisions du jour, série, répartition, charge prévue à 7 jours, mots les plus résistants |
-| Accessibilité | Clavier complet (`1`–`4`), `aria-live`, lien d'évitement, aucune information par la couleur seule, `prefers-reduced-motion`, taille de texte réglable, thème clair/sombre/système |
+| Accessibilité | Clavier complet (`1`–`4`), `aria-live`, lien d'évitement, aucune information par la couleur seule, `prefers-reduced-motion`, taille de texte réglable, thème clair/sombre/système ; **0 violation axe-core « serious »/« critical »**, contraste AA vérifié par calcul (60 tests) |
+| PWA | Installable, fonctionne hors ligne, icônes générées sans dépendance, `base` absolue pour un service worker qui contrôle réellement son scope |
 | Données | Export / import JSON, réinitialisation confirmée, bannière si l'écriture échoue, barrière d'erreur racine |
-| Qualité | 63 tests (`srs`, `texte`, `stockage`, invariants du corpus), TypeScript strict, build 100 Ko gzip |
+| Licences | `LICENCE-DONNEES.md` + écran Réglages → Sources : attribution Lexique 3.83 (CC BY-SA 4.0) pour la phonétique, contenu rédactionnel original par ailleurs |
+| Qualité | **164 tests** (`srs`, `texte`, `phonetique`, `stockage`, invariants du corpus, contraste WCAG, accessibilité), TypeScript strict, build ~186 Ko gzip |
 
-Ce qui manque pour appeler cela un MVP : le corpus (§1.4), et les lots L4 à L6.
+Ce qui manque pour appeler cela un MVP déployé : la bascule GitHub Pages (L7,
+manuelle) et la validation sur un Android et un iPhone physiques.
 
 ---
 
@@ -144,6 +151,26 @@ s_kn   = 1 - deflem (si defobs >= 20)              poids 0.10   connaissance dé
 Seuils : `<1.8` → 1, `1.8–2.4` → 2, `2.4–3.1` → 3, `3.1–3.8` → 4, `≥3.8` → 5.
 Cible : difficulté 3 à 5.
 
+**Correction appliquée après essai (`scripts/construire-candidats.mjs`).** Cette
+première pondération place en tête des mots simplement *rares*, pas *soutenus* :
+sur un run réel, le haut du classement était occupé par « cancoillotte »,
+« badigoinces », « tartignolle » — régionalismes et familiarismes, aucunement
+du registre intellectuel visé. Le poids de l'écart écrit/oral (`s_book`, seul
+signal de *registre* que porte Lexique) est monté de 0.15 à **0.30**, et celui
+de la longueur (`s_len`, un mauvais indice qui favorisait les mots familiers
+longs) redescendu à 0.05 :
+
+```
+s_freq × 0.35   s_book × 0.30   s_len × 0.05   s_syl × 0.10   s_opac × 0.10   s_kn × 0.10
+```
+
+Un filtre dur s'y ajoute : `ecartRegistre = zipf_livres - zipf_films >= 0.45`,
+faute de quoi la moitié du haut de liste reste familière malgré la repondération.
+`scripts/preparer-redaction.mjs` (utilisé pour les 273 mots proposés par agents
+plutôt qu'issus du filtre statistique, cf. §4.5) reprend cette formule corrigée
+sans le filtre dur — les mots y sont déjà choisis pour leur registre par
+l'agent, Lexique ne fait que trancher la phonétique et estimer la difficulté.
+
 Limite honnête : **Lexique n'a aucun champ de domaine**. Exclure le jargon
 (*cotylédon*, *glycémie*) demande une passe supplémentaire — jointure DBnary sur
 les catégories thématiques du Wiktionnaire, puis classification binaire
@@ -151,7 +178,8 @@ les catégories thématiques du Wiktionnaire, puis classification binaire
 
 ### 4.3 Vérification adversariale
 
-La procédure qui a produit les 60 fiches actuelles, et qui tient à l'échelle :
+La procédure qui a produit les 333 fiches actuelles (60 initiales + 273 par le
+pipeline décrit ici), et qui tient à l'échelle :
 
 1. génération par lots thématiques de 15 ;
 2. **relecture par un second modèle, en posture adversariale** — présumer que
@@ -175,10 +203,37 @@ au premier essai après relecture — ils échouaient avant.
 | TLFi / CNRTL | **Non** | Consultation gratuite ≠ licence de réutilisation. Usage acceptable : vérification manuelle par un relecteur. |
 | Le Robert, Larousse | **Non** | CGU explicites + droit *sui generis* des bases de données (art. L.341-1 CPI). Aucune reprise, même reformulée de près. |
 
-Le corpus actuel est **rédigé, pas extrait** : définitions, exemples et mésusages
-sont originaux, aucune phonétique n'en provient encore. Dès qu'un champ viendra
-de Lexique, il faudra un `LICENCE-DONNEES.md` distinct de la licence du code et
-un écran « Sources » dans les réglages.
+Le corpus est **rédigé pour les champs de sens, extrait pour la phonétique** :
+définitions, exemples et mésusages restent originaux ; `api`, `syllabation` et
+`nbSyllabes` viennent désormais de Lexique 3.83. L'attribution CC BY-SA vit
+dans `LICENCE-DONNEES.md`, distinct de la licence du code, et un résumé est
+visible dans l'application (Réglages → Sources).
+
+### 4.5 Résultat effectif du premier passage L4
+
+Exécuté en deux temps, chacun avec relecture adversariale :
+
+1. **Proposition** — 8 agents (4 champs thématiques × 2 profils grammaticaux),
+   chacun libre de proposer des lemmes du registre soutenu sans connaître
+   Lexique : 480 propositions.
+2. **Vérification phonétique** — chaque proposition croisée contre Lexique
+   3.83 par script déterministe (`nbsyll === 3`, catégorie grammaticale
+   concordante, `nbhomogr === 1`) : 273 validées, 207 écartées (76 introuvables
+   dans Lexique, 61 doublons entre agents, 24 à 2 ou 4 syllabes réelles malgré
+   un comptage correct côté agent — confirmant la mise en garde du §1.1 : les
+   adverbes en *-ment* sont le piège le plus fréquent, le e caduc interne
+   comptant chez Lexique et pas dans l'intuition orthographique).
+3. **Rédaction** — 10 lots thématiques (~30 mots), sans jamais transmettre la
+   phonétique aux agents rédacteurs : ils écrivent sur un mot, jamais sur sa
+   prononciation.
+4. **Relecture adversariale** — un second modèle par lot, consigne de présumer
+   l'erreur. Un lot (35 mots) a épuisé ses 5 tentatives de sortie structurée et
+   a dû être rejoué isolément via une reprise de workflow (`resumeFromRunId`) ;
+   les 9 autres lots ont été réutilisés depuis le cache.
+
+Résultat : **60 + 273 = 333 fiches**, toutes trisyllabiques au sens
+phonétique, phonétique 100 % issue de Lexique. Le seuil de 300 (§1.4) est
+dépassé avec une marge de 33 fiches.
 
 ---
 
@@ -186,18 +241,18 @@ un écran « Sources » dans les réglages.
 
 Chaque critère se répond par oui ou par non.
 
-| Lot | Contenu | Critère d'acceptation | Effort |
+| Lot | Contenu | Critère d'acceptation | Statut |
 |---|---|---|---|
 | **L0** ✅ | Maquette fonctionnelle : SRS, 4 formats, liste filtrable, progression, thème, audio, export | `npm run build && npm test` passe ; une session complète s'enchaîne sans erreur console | fait |
 | **L1** ✅ | Contrat de journal pérenne | Un test échoue si `etatAvant` ou `joursEcoules` disparaît de `LogRevision` | fait |
 | **L2** ✅ | Sauvegarde | Exporter → réinitialiser → réimporter rend `cartes` et `logs` strictement égaux à l'original | fait |
-| **L3** | Premier lancement | Un profil neuf termine une session sans ouvrir les réglages ; l'écran J0 propose 5 mots ; file vide → message, sans bouton qui entamerait le quota de demain | 0,5 j |
-| **L4** | Corpus 300 | `LEXIQUE.length >= 300` ; 0 échec des 19 invariants ; 0 identifiant dupliqué ; `nbSyllabes === 3` sur 100 % des entrées ; 10 % re-vérifiés au CNRTL, taux d'erreur du lot < 5 % | 6–8 j |
-| **L5** | Accessibilité | Session complète au clavier seul, sans souris ; axe-core : 0 violation « serious » sur les 4 vues ; contraste AA vérifié en clair et en sombre | 1 j |
-| **L6** | PWA | Build servi en HTTPS, mode avion, rechargement à froid : l'application démarre et une note est enregistrée (impose `base` absolue) | 1 j |
-| **L7** | Déploiement | URL publique ; application installée sur un Android et un iPhone ; une session complétée sur chacun, audio testé sur les deux | 0,5 j |
+| **L3** ✅ | Premier lancement | Un profil neuf termine une session sans ouvrir les réglages ; l'écran J0 propose 5 mots ; file vide → message avec échéance affichée, sans bouton qui entamerait le quota de demain | fait — `Accueil.tsx`, `prochaineEcheance()` |
+| **L4** ✅ | Corpus ≥ 300 | `LEXIQUE.length >= 300` ; 0 échec des 19 invariants ; 0 identifiant dupliqué ; `nbSyllabes === 3` sur 100 % des entrées ; phonétique dérivée de Lexique 3.83, jamais générée | fait — 60 + 273 candidats extraits de Lexique et vérifiés, rédigés puis relus contradictoirement ; voir §4.5 |
+| **L5** ✅ | Accessibilité | Session complète au clavier seul, sans souris ; axe-core : 0 violation « serious »/« critical » sur les 4 vues ; contraste AA vérifié en clair et en sombre | fait — `src/accessibilite.test.tsx` (12 tests), `src/styles/contraste.test.ts` (60 tests, a corrigé `--texte-3` et `--bordure-forte`, sous le seuil AA dans les deux thèmes) |
+| **L6** ✅ | PWA | Build servi en HTTPS, mode avion, rechargement à froid : l'application démarre et une note est enregistrée (impose `base` absolue) | fait — `vite-plugin-pwa`, icônes générées sans dépendance (`scripts/generer-icones.mjs`), `base: '/vocabulaire_fran-ais/'` ; manifeste, SW et icônes vérifiés en HTTP réel (§7). Reste à valider : mode avion sur appareil physique |
+| **L7** | Déploiement | URL publique ; application installée sur un Android et un iPhone ; une session complétée sur chacun, audio testé sur les deux | outillage prêt (`.github/workflows/deploy.yml`) — **une bascule manuelle reste nécessaire : Settings → Pages → Source = « GitHub Actions »**, aucun outil en ligne de commande ne peut le faire à la place d'un administrateur du dépôt |
 
-**MVP = L0 à L7.** Chemin critique : L4, seul lot qui ne se compresse pas.
+**MVP = L0 à L7.** L4 était le chemin critique ; il est franchi. Il ne reste que la bascule Pages (L7) et la validation sur deux appareils physiques.
 
 ### Après le MVP
 
@@ -222,11 +277,11 @@ comptes utilisateurs · classement, gamification, notifications push.
 
 | Gravité | Risque | Mitigation |
 |---|---|---|
-| **Critique** | 60 mots = 8 jours d'usage, puis l'application est vide | Ne pas sortir sous 300 fiches relues (L4) |
-| **Critique** | Perte de progression : `localStorage` est effaçable par le navigateur ou par l'utilisateur en vidant les données du site | Export déjà disponible ; ajouter un rappel après 7 jours sans export ; appeler `navigator.storage.persist()` |
-| **Élevé** | Corpus généré = corpus faux. Une définition plausible mais inexacte est pire que pas de fiche du tout | Relecture adversariale + 19 invariants en test + échantillon manuel de 10 % |
+| **Résolu** | 60 mots = 8 jours d'usage, puis l'application est vide | Corpus étendu à 300+ fiches relues (L4) |
+| **Critique** | Perte de progression : `localStorage` est effaçable par le navigateur ou par l'utilisateur en vidant les données du site | Export déjà disponible ; ajouter un rappel après 7 jours sans export ; appeler `navigator.storage.persist()` — reste à faire |
+| **Résolu** | Corpus généré = corpus faux. Une définition plausible mais inexacte est pire que pas de fiche du tout | Relecture adversariale sur les 273 fiches ajoutées (rédaction → relecture qui présume l'erreur) + 19 invariants en test. Reste ouvert : l'échantillon manuel de 10 % au CNRTL n'a pas été fait — à faire avant toute publication élargie |
 | **Élevé** | Abandon par surcharge : 8 nouveaux mots/jour deviennent ~40 révisions quotidiennes en trois semaines | Quota et plafond de session déjà en place ; la courbe de charge à 7 jours est affichée précisément pour rendre cet effet visible avant qu'il ne se produise |
 | **Moyen** | Aucune voix `fr-*` sur beaucoup d'Android | Bouton désactivé avec libellé explicite, API phonétique toujours affichée ; à tester sur un appareil réel (L7) |
-| **Moyen** | CC BY-SA non honorée si des champs viennent de Lexique | `LICENCE-DONNEES.md` + écran « Sources » avant toute publication |
+| **Résolu** | CC BY-SA non honorée : les champs phonétiques viennent bien de Lexique 3.83 depuis L4 | `LICENCE-DONNEES.md` + écran « Sources » dans Réglages, tous deux en place avant la publication |
 | **Faible** | Identifiants instables (`eluder` vs `éluder`) | Règle figée : `id = slug ASCII`, jamais recalculé ; vérifiée par test |
 | **Faible** | Horloge reculée par l'utilisateur | Les écarts sont bornés par `max(0, …)` ; le planificateur ne lit jamais l'horloge lui-même |

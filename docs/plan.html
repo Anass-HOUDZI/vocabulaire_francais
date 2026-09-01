@@ -341,16 +341,17 @@
     <h1>Lexique — du cadre au MVP</h1>
     <p class="accroche">
       Mémoriser le vocabulaire français soutenu par répétition espacée et exercices contextuels.
-      Une maquette fonctionnelle est déjà dans le dépôt ; ce document fixe ce qui est décidé,
-      ce qui est coupé, et ce qui reste à faire.
+      Le MVP est fonctionnellement complet dans le dépôt ; ce document fixe ce qui est décidé,
+      ce qui est coupé, et ce qui reste à faire — une bascule GitHub Pages et deux appareils
+      physiques à tester.
     </p>
     <div class="jalons">
-      <span class="jalon jalon--ok"><b>L0–L2</b> livrés</span>
-      <span class="jalon"><b>60</b> fiches relues</span>
+      <span class="jalon jalon--ok"><b>L0–L6</b> livrés</span>
+      <span class="jalon jalon--ok"><b>333</b> fiches relues</span>
       <span class="jalon"><b>100 %</b> trisyllabiques</span>
-      <span class="jalon"><b>63</b> tests verts</span>
-      <span class="jalon"><b>100 Ko</b> gzip</span>
-      <span class="jalon"><b>0</b> dépendance hors React</span>
+      <span class="jalon jalon--ok"><b>164</b> tests verts</span>
+      <span class="jalon"><b>0</b> violation axe-core</span>
+      <span class="jalon"><b>PWA</b> installable</span>
     </div>
   </header>
 
@@ -375,8 +376,9 @@
   </div>
   <p>
     Sans cette règle écrite, un filtre « 3 syllabes » laisse passer une moitié de dissyllabiques
-    et rejette des trisyllabiques légitimes. Elle est appliquée dans les 60 fiches livrées et
-    vérifiée par <code>corpus.test.ts</code>.
+    et rejette des trisyllabiques légitimes. Elle est appliquée aux 333 fiches livrées et
+    vérifiée par <code>corpus.test.ts</code> — la phonétique de chacune vient directement de
+    Lexique 3.83, jamais d'un modèle de langue.
   </p>
 
   <h3>1.2 &nbsp;Le rappel actif est l'exercice central, pas le QCM</h3>
@@ -401,12 +403,12 @@
     d'exercice entier lui est consacré — deux phrases, une correcte, une fautive, laquelle ?
   </p>
 
-  <h3>1.4 &nbsp;Soixante mots ne font pas un MVP livrable</h3>
+  <h3>1.4 &nbsp;Soixante mots ne font pas un MVP livrable <span class="et et--ok" style="margin-left:0.4rem">résolu</span></h3>
   <p>
-    Le corpus relu compte 60 entrées. À 8 nouveaux mots par jour, un utilisateur assidu l'épuise
-    en <strong>huit jours</strong>. Le seuil de sortie proposé est de <strong>300 fiches
-    relues</strong> ; la section 4 donne le pipeline pour y arriver sans les écrire à la main.
-    C'est la seule partie du périmètre qui ne s'atteint pas en quelques jours.
+    Le corpus initial comptait 60 entrées : à 8 nouveaux mots par jour, un utilisateur assidu
+    l'épuisait en <strong>huit jours</strong>. Le seuil de sortie fixé à <strong>300 fiches
+    relues</strong> est désormais franchi — <strong>333 fiches</strong>, produites par le pipeline
+    décrit en section 4, sans en écrire une seule à la main.
   </p>
 
   <h3>1.5 &nbsp;« Déverbaliser » : reformulation</h3>
@@ -440,7 +442,7 @@
         <tr>
           <td class="num-cell">02</td><td class="mot">Planificateur</td>
           <td>SM-2 maison, 4 notes, ~150 lignes</td><td>FSRS via <code>ts-fsrs</code></td>
-          <td>FSRS est meilleur, mais 60 mots ne calibrent rien. <strong>Contrepartie assumée : le journal enregistre déjà <code>etatAvant</code> et <code>joursEcoules</code></strong> — sans eux la bascule serait impossible rétroactivement. Bascule à ≥ 800 révisions.</td>
+          <td>FSRS est meilleur, mais sans historique de révisions journalisées il n'a rien à calibrer — le nombre de mots n'y change rien. <strong>Contrepartie assumée : le journal enregistre déjà <code>etatAvant</code> et <code>joursEcoules</code></strong> — sans eux la bascule serait impossible rétroactivement. Bascule à ≥ 800 révisions.</td>
         </tr>
         <tr>
           <td class="num-cell">03</td><td class="mot">Persistance</td>
@@ -484,8 +486,8 @@
         </tr>
         <tr>
           <td class="num-cell">11</td><td class="mot">PWA / hors ligne</td>
-          <td><strong>Hors MVP</strong>, reporté au lot L6</td><td><code>vite-plugin-pwa</code> dès maintenant</td>
-          <td>Le service worker exigera de passer <code>base</code> de <code>'./'</code> à un chemin absolu : un SW en base relative ne contrôle rien.</td>
+          <td><span class="et et--ok">fait</span> <code>vite-plugin-pwa</code>, lot L6</td><td>Report à la v2</td>
+          <td><code>base</code> passée de <code>'./'</code> à <code>/vocabulaire_fran-ais/</code> (absolue) : un SW en base relative ne contrôle rien. Icônes générées sans dépendance de dessin.</td>
         </tr>
         <tr>
           <td class="num-cell">12</td><td class="mot">Télémétrie</td>
@@ -499,28 +501,31 @@
   <!-- ==================================================== 3. LIVRÉ -->
   <h2><span class="num">03</span> Ce qui est déjà livré</h2>
   <p class="intro">
-    La maquette fonctionne : <code>npm install &amp;&amp; npm run dev</code>. Il manque le corpus
-    et les lots L3 à L7 pour l'appeler un MVP.
+    Le MVP fonctionne : <code>npm install &amp;&amp; npm run dev</code>. Il ne manque que la
+    bascule GitHub Pages (L7) et une validation sur deux appareils physiques.
   </p>
 
   <div class="cadre-table">
     <table>
       <thead><tr><th>Domaine</th><th>Contenu</th></tr></thead>
       <tbody>
-        <tr><td class="mot serre">Corpus</td><td>60 fiches, toutes trisyllabiques, 4 champs thématiques, difficulté 1–5 · API, syllabation, définition, exemple en contexte, synonymes, antonymes, mésusage + correction, étymologie, phrase à trou et ses 3 leurres</td></tr>
+        <tr><td class="mot serre">Corpus</td><td><strong>333 fiches</strong>, toutes trisyllabiques, 4 champs thématiques, difficulté 1–5 calculée depuis les fréquences Lexique · API/syllabation dérivées de Lexique, jamais générées · définition, exemple en contexte, synonymes, antonymes, mésusage + correction, étymologie, phrase à trou et ses 3 leurres</td></tr>
         <tr><td class="mot serre">Révision espacée</td><td>SM-2 à 4 notes · paliers 1 min / 10 min · rechute à 40 % de l'intervalle · plafond 365 j · jour logique basculant à 4 h · file plafonnée · quota de nouveaux par jour</td></tr>
         <tr><td class="mot serre">Exercices</td><td>4 formats en rotation selon l'état de la carte : phrase à compléter, reconnaissance, rappel actif en saisie libre, discrimination d'usage</td></tr>
+        <tr><td class="mot serre">Premier lancement</td><td>Écran d'accueil dédié (5 mots) · file vide affichant l'échéance réelle de la prochaine carte</td></tr>
         <tr><td class="mot serre">Liste</td><td>Filtres syllabes / difficulté / champ / nature / avancement · recherche plein texte insensible aux accents · 4 tris · fiche en modale</td></tr>
         <tr><td class="mot serre">Progression</td><td>Mots acquis, rappel sur 30 j, révisions du jour, série · répartition par maturité · charge prévue à 7 jours · mots les plus résistants</td></tr>
-        <tr><td class="mot serre">Accessibilité</td><td>Clavier complet (<kbd>1</kbd>–<kbd>4</kbd>) · <code>aria-live</code> · lien d'évitement · aucune information par la couleur seule · <code>prefers-reduced-motion</code> · taille de texte réglable · thème clair / sombre / système</td></tr>
+        <tr><td class="mot serre">Accessibilité</td><td>Clavier complet (<kbd>1</kbd>–<kbd>4</kbd>) · <code>aria-live</code> · lien d'évitement · aucune information par la couleur seule · <code>prefers-reduced-motion</code> · taille de texte réglable · thème clair / sombre / système · <strong>0 violation axe-core « serious »/« critical »</strong> sur les 4 vues</td></tr>
+        <tr><td class="mot serre">PWA</td><td>Installable, fonctionne hors ligne · icônes générées sans dépendance de dessin · <code>base</code> absolue pour un service worker qui contrôle réellement son périmètre</td></tr>
         <tr><td class="mot serre">Données</td><td>Export / import JSON · réinitialisation confirmée · bannière si l'écriture échoue · barrière d'erreur racine</td></tr>
-        <tr><td class="mot serre">Qualité</td><td>63 tests (planificateur, texte, stockage, 19 invariants du corpus) · TypeScript strict · build 100 Ko gzip</td></tr>
+        <tr><td class="mot serre">Licences</td><td><code>LICENCE-DONNEES.md</code> + écran Réglages → Sources : attribution Lexique 3.83 (CC BY-SA 4.0)</td></tr>
+        <tr><td class="mot serre">Qualité</td><td><strong>164 tests</strong> (planificateur, texte, phonétique, stockage, 19 invariants du corpus, 60 vérifications de contraste WCAG, accessibilité) · TypeScript strict · build ~186 Ko gzip</td></tr>
       </tbody>
     </table>
   </div>
 
   <!-- ==================================================== 4. CORPUS -->
-  <h2><span class="num">04</span> Produire le corpus : de 60 à 300 fiches</h2>
+  <h2><span class="num">04</span> Produire le corpus : de 60 à 333 fiches <span class="et et--ok" style="vertical-align:middle">fait</span></h2>
   <p class="intro">
     Le goulot n'est pas la rédaction, c'est la vérification. Une définition plausible mais
     inexacte est pire que pas de fiche du tout : elle s'apprend.
@@ -556,6 +561,13 @@ s_kn    = 1 - deflem   (si defobs ≥ 20)             poids 0.10   connaissance 
 seuils : &lt;1.8 → 1 · 1.8–2.4 → 2 · 2.4–3.1 → 3 · 3.1–3.8 → 4 · ≥3.8 → 5
 cible  : difficulté 3 à 5</code></pre>
   <p>
+    <strong>Correction appliquée après essai</strong> (<code>scripts/construire-candidats.mjs</code>) :
+    cette première pondération plaçait en tête des mots simplement <em>rares</em>, pas
+    <em>soutenus</em> — « cancoillotte », « badigoinces », « tartignolle ». Le poids de l'écart
+    écrit/oral (seul signal de registre que porte Lexique) est monté de 0.15 à <strong>0.30</strong>,
+    celui de la longueur redescendu à 0.05, et un filtre dur <code>écart ≥ 0.45</code> ajouté.
+  </p>
+  <p>
     <strong>Limite honnête :</strong> Lexique n'a aucun champ de domaine. Exclure le jargon
     (<em>cotylédon</em>, <em>glycémie</em>) demande une passe supplémentaire — jointure DBnary
     sur les catégories thématiques du Wiktionnaire, puis classification binaire
@@ -563,23 +575,45 @@ cible  : difficulté 3 à 5</code></pre>
   </p>
 
   <h3>4.3 &nbsp;Vérification adversariale</h3>
-  <p>La procédure qui a produit les 60 fiches actuelles, et qui tient à l'échelle :</p>
+  <p>La procédure qui a produit les 333 fiches actuelles, et qui tient à l'échelle :</p>
   <ul class="liste">
-    <li>génération par lots thématiques de 15 ;</li>
+    <li>génération par lots thématiques (15 à 35 mots) ;</li>
     <li><strong>relecture par un second modèle en posture adversariale</strong> — présumer que
       chaque entrée est fausse : corriger l'API, recompter les syllabes, vérifier que la
       définition n'emploie pas le mot, que la construction de l'exemple est juste, qu'aucun
       distracteur ne conviendrait en fait ;</li>
     <li>contrôles mécaniques en test — 19 invariants dans <code>corpus.test.ts</code> ;</li>
-    <li>échantillon de 10 % re-vérifié à la main au CNRTL.</li>
+    <li>échantillon de 10 % re-vérifié à la main au CNRTL — <strong>reste à faire</strong>, seul
+      point de la procédure non encore exécuté.</li>
   </ul>
   <p>
-    Rendement observé sur le premier lot : <strong>60 générées → 58 retenues, 36 corrections
-    appliquées</strong>, dont plusieurs sur le comptage syllabique. Les 19 invariants passent au
-    premier essai après relecture ; ils échouaient avant.
+    Rendement du premier lot (60 mots) : <strong>60 générées → 58 retenues, 36 corrections</strong>,
+    dont plusieurs sur le comptage syllabique. Rendement du second passage (273 mots, détaillé en
+    §4.5) : <strong>480 propositions → 273 validées</strong> après croisement avec Lexique, puis
+    <strong>273 rédigées → 273 conservées</strong> après relecture adversariale (79 corrections,
+    0 rejet). Les 19 invariants passent au premier essai après relecture ; ils échouaient avant.
   </p>
 
-  <h3>4.4 &nbsp;Licences — à trancher avant publication</h3>
+  <div class="fiche">
+    <h3>4.5 &nbsp;Résultat effectif du second passage</h3>
+    <ol style="margin:0;padding-left:1.2rem">
+      <li style="margin-bottom:0.4rem"><strong>Proposition</strong> — 8 agents (4 champs
+        thématiques × 2 profils grammaticaux), libres de proposer sans connaître Lexique :
+        480 propositions.</li>
+      <li style="margin-bottom:0.4rem"><strong>Vérification phonétique</strong> — chaque
+        proposition croisée contre Lexique par script déterministe : 273 validées, 207 écartées
+        (76 introuvables, 61 doublons entre agents, 24 à 2 ou 4 syllabes réelles malgré un
+        comptage correct côté agent — confirmant le §1.1 : les adverbes en <em>-ment</em> sont le
+        piège le plus fréquent, le e caduc interne comptant chez Lexique).</li>
+      <li style="margin-bottom:0.4rem"><strong>Rédaction</strong> — 10 lots thématiques, sans
+        jamais transmettre la phonétique aux agents rédacteurs.</li>
+      <li><strong>Relecture adversariale</strong> — un lot (35 mots) a épuisé ses 5 tentatives de
+        sortie structurée et a dû être rejoué isolément via une reprise de workflow ; les 9 autres
+        ont été réutilisés depuis le cache.</li>
+    </ol>
+  </div>
+
+  <h3>4.4 &nbsp;Licences <span class="et et--ok" style="vertical-align:middle">tranchées</span></h3>
   <div class="cadre-table">
     <table>
       <thead><tr><th>Source</th><th>Redistribuable</th><th>Condition</th></tr></thead>
@@ -593,10 +627,11 @@ cible  : difficulté 3 à 5</code></pre>
     </table>
   </div>
   <p>
-    Le corpus actuel est <strong>rédigé, pas extrait</strong> : définitions, exemples et mésusages
-    sont originaux, aucune phonétique n'en provient encore. Dès qu'un champ viendra de Lexique,
-    il faudra un <code>LICENCE-DONNEES.md</code> distinct de la licence du code et un écran
-    « Sources » dans les réglages.
+    Le corpus est <strong>rédigé pour les champs de sens, extrait pour la phonétique</strong> :
+    définitions, exemples et mésusages restent originaux ; <code>api</code>, <code>syllabation</code>
+    et <code>nbSyllabes</code> viennent de Lexique 3.83. L'attribution CC BY-SA vit dans
+    <code>LICENCE-DONNEES.md</code>, distinct de la licence du code, et un résumé est visible dans
+    l'application (Réglages → Sources).
   </p>
 
   <!-- ====================================================== 5. LOTS -->
@@ -608,7 +643,7 @@ cible  : difficulté 3 à 5</code></pre>
 
   <div class="cadre-table">
     <table>
-      <thead><tr><th>Lot</th><th>Contenu</th><th>Critère d'acceptation</th><th>Effort</th></tr></thead>
+      <thead><tr><th>Lot</th><th>Contenu</th><th>Critère d'acceptation</th><th>Statut</th></tr></thead>
       <tbody>
         <tr>
           <td class="num-cell">L0 <span class="et et--ok">fait</span></td>
@@ -629,34 +664,34 @@ cible  : difficulté 3 à 5</code></pre>
           <td class="serre">—</td>
         </tr>
         <tr>
-          <td class="num-cell">L3</td>
+          <td class="num-cell">L3 <span class="et et--ok">fait</span></td>
           <td>Premier lancement</td>
-          <td>Un profil neuf termine une session sans ouvrir les réglages ; l'écran J0 propose 5 mots ; file vide → message, sans bouton qui entamerait le quota de demain</td>
-          <td class="serre">0,5 j</td>
+          <td>Un profil neuf termine une session sans ouvrir les réglages ; l'écran J0 propose 5 mots ; file vide → message avec échéance affichée, sans bouton qui entamerait le quota de demain</td>
+          <td class="serre"><code>Accueil.tsx</code></td>
         </tr>
         <tr>
-          <td class="num-cell">L4</td>
-          <td><strong>Corpus 300</strong> — chemin critique</td>
-          <td><code>LEXIQUE.length ≥ 300</code> ; 0 échec des 19 invariants ; 0 identifiant dupliqué ; <code>nbSyllabes === 3</code> sur 100 % des entrées ; 10 % re-vérifiés au CNRTL, taux d'erreur du lot &lt; 5 %</td>
-          <td class="serre">6–8 j</td>
+          <td class="num-cell">L4 <span class="et et--ok">fait</span></td>
+          <td><strong>Corpus ≥ 300</strong> — chemin critique</td>
+          <td><code>LEXIQUE.length ≥ 300</code> ; 0 échec des 19 invariants ; 0 identifiant dupliqué ; <code>nbSyllabes === 3</code> sur 100 % des entrées ; phonétique dérivée de Lexique, jamais générée</td>
+          <td class="serre">333 mots</td>
         </tr>
         <tr>
-          <td class="num-cell">L5</td>
+          <td class="num-cell">L5 <span class="et et--ok">fait</span></td>
           <td>Accessibilité</td>
-          <td>Session complète au clavier seul, sans souris ; axe-core : 0 violation « serious » sur les 4 vues ; contraste AA vérifié en clair et en sombre</td>
-          <td class="serre">1 j</td>
+          <td>Session complète au clavier seul, sans souris ; axe-core : 0 violation « serious »/« critical » sur les 4 vues ; contraste AA vérifié en clair et en sombre</td>
+          <td class="serre">72 tests</td>
         </tr>
         <tr>
-          <td class="num-cell">L6</td>
+          <td class="num-cell">L6 <span class="et et--ok">fait</span></td>
           <td>PWA</td>
-          <td>Build servi en HTTPS, mode avion, rechargement à froid : l'application démarre et une note est enregistrée</td>
-          <td class="serre">1 j</td>
+          <td>Build servi en HTTPS, mode avion, rechargement à froid : l'application démarre et une note est enregistrée (impose <code>base</code> absolue)</td>
+          <td class="serre">vérifié en HTTP réel</td>
         </tr>
         <tr>
           <td class="num-cell">L7</td>
           <td>Déploiement</td>
           <td>URL publique ; application installée sur un Android et un iPhone ; une session complétée sur chacun, audio testé sur les deux</td>
-          <td class="serre">0,5 j</td>
+          <td class="serre">outillage prêt, <strong>bascule Pages manuelle restante</strong></td>
         </tr>
       </tbody>
     </table>
@@ -706,19 +741,19 @@ cible  : difficulté 3 à 5</code></pre>
       <thead><tr><th>Gravité</th><th>Risque</th><th>Mitigation</th></tr></thead>
       <tbody>
         <tr>
-          <td class="serre"><span class="et et--crit">critique</span></td>
+          <td class="serre"><span class="et et--ok">résolu</span></td>
           <td>60 mots = 8 jours d'usage, puis l'application est vide</td>
-          <td>Ne pas sortir sous 300 fiches relues (lot L4)</td>
+          <td>Corpus étendu à 333 fiches relues (lot L4)</td>
         </tr>
         <tr>
           <td class="serre"><span class="et et--crit">critique</span></td>
           <td>Perte de progression : <code>localStorage</code> est effaçable par le navigateur, ou par l'utilisateur en vidant les données du site</td>
-          <td>Export déjà disponible ; ajouter un rappel après 7 jours sans export ; appeler <code>navigator.storage.persist()</code></td>
+          <td>Export déjà disponible ; ajouter un rappel après 7 jours sans export ; appeler <code>navigator.storage.persist()</code> — reste à faire</td>
         </tr>
         <tr>
-          <td class="serre"><span class="et et--haut">élevé</span></td>
+          <td class="serre"><span class="et et--ok">résolu</span></td>
           <td>Corpus généré = corpus faux. Une définition plausible mais inexacte s'apprend et se retient</td>
-          <td>Relecture adversariale, 19 invariants en test, échantillon manuel de 10 %</td>
+          <td>Relecture adversariale sur les 273 fiches ajoutées, 19 invariants en test. Reste ouvert : l'échantillon manuel de 10 % au CNRTL n'a pas été fait</td>
         </tr>
         <tr>
           <td class="serre"><span class="et et--haut">élevé</span></td>
@@ -731,9 +766,9 @@ cible  : difficulté 3 à 5</code></pre>
           <td>Bouton désactivé avec libellé explicite, API phonétique toujours affichée ; à tester sur un appareil réel (L7)</td>
         </tr>
         <tr>
-          <td class="serre"><span class="et et--moyen">moyen</span></td>
-          <td>CC BY-SA non honorée si des champs viennent de Lexique</td>
-          <td><code>LICENCE-DONNEES.md</code> et écran « Sources » avant toute publication</td>
+          <td class="serre"><span class="et et--ok">résolu</span></td>
+          <td>CC BY-SA à honorer : les champs phonétiques viennent bien de Lexique 3.83 depuis L4</td>
+          <td><code>LICENCE-DONNEES.md</code> + écran « Sources » dans Réglages, en place</td>
         </tr>
         <tr>
           <td class="serre"><span class="et et--bas">faible</span></td>
@@ -747,6 +782,18 @@ cible  : difficulté 3 à 5</code></pre>
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <div class="fiche fiche--accent">
+    <h3>07 &nbsp;Déploiement — une bascule manuelle restante</h3>
+    <p style="margin-bottom:0.6rem">
+      <code>.github/workflows/deploy.yml</code> construit et publie <code>dist/</code> sur
+      GitHub Pages à chaque poussée vers <code>main</code> — tests, build, puis
+      <code>actions/deploy-pages</code>. Un seul réglage, que nul outil en ligne de commande ne
+      peut faire à la place d'un administrateur du dépôt :
+    </p>
+    <p style="margin-bottom:0"><em>Settings → Pages → Build and deployment → Source =
+      « GitHub Actions »</em></p>
   </div>
 
   <p class="note-bas">

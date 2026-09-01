@@ -210,6 +210,22 @@ export function fileDuJour(
   return [...enCours, ...revisions, ...nouveaux].slice(0, options.maxParSession)
 }
 
+/**
+ * Horodatage de la prochaine carte à revoir, ou `null` s'il n'y en a aucune.
+ *
+ * Sert l'état vide : dire « rien à réviser » sans dire quand revenir laisse
+ * l'utilisateur devant une impasse, et l'incite à réclamer des mots nouveaux
+ * dont il n'a pas besoin.
+ */
+export function prochaineEcheance(cartes: Carte[], maintenant: number): number | null {
+  let min: number | null = null
+  for (const c of cartes) {
+    if (c.suspendue || c.etat === 'nouveau' || c.du <= maintenant) continue
+    if (min === null || c.du < min) min = c.du
+  }
+  return min
+}
+
 /* -------------------------------------------------------- Statistiques */
 
 export interface Statistiques {

@@ -18,11 +18,17 @@
   --surface: #ffffff;
   --surface-2: #f7f4ee;
   --bordure: #e2dbcf;
-  --bordure-forte: #cdc3b2;
+  /* --bordure-forte porte à elle seule la limite visible des boutons et des
+     champs : le fond d'une carte et celui de la page ne diffèrent que de 1,03:1.
+     Elle est donc soumise au critère WCAG 1.4.11 (3:1), pas au libre choix
+     esthétique. --bordure, elle, ne sert que des filets décoratifs. */
+  --bordure-forte: #8f887c;
 
   --texte: #22201d;
   --texte-2: #57524a;
-  --texte-3: #857e73;
+  /* Sert des libellés en 0.72rem, donc du texte normal au sens WCAG : 4.5:1 exigé
+     y compris sur --surface-2, le fond le plus clair sur lequel il apparaît. */
+  --texte-3: #6b6459;
 
   --accent: #8a3d2e;
   --accent-fort: #6e2f23;
@@ -61,11 +67,11 @@
     --surface: #212027;
     --surface-2: #282730;
     --bordure: #33323c;
-    --bordure-forte: #4a4956;
+    --bordure-forte: #6f6d7e;
 
     --texte: #ece9e4;
     --texte-2: #b3aea6;
-    --texte-3: #837e78;
+    --texte-3: #9a948c;
 
     --accent: #e08a72;
     --accent-fort: #f0a48d;
@@ -94,11 +100,11 @@
   --surface: #212027;
   --surface-2: #282730;
   --bordure: #33323c;
-  --bordure-forte: #4a4956;
+  --bordure-forte: #6f6d7e;
 
   --texte: #ece9e4;
   --texte-2: #b3aea6;
-  --texte-3: #837e78;
+  --texte-3: #9a948c;
 
   --accent: #e08a72;
   --accent-fort: #f0a48d;

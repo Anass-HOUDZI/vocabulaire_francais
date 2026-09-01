@@ -8,6 +8,9 @@
 
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": false,
+    // Autorise l'import de scripts/sampa-vers-api.mjs depuis phonetique.test.ts
+    // (miroir JS pur, hors du projet TypeScript) sans exiger de déclarations.
+    "allowJs": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "moduleDetection": "force",

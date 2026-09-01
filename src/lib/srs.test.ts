@@ -15,6 +15,7 @@ import {
   JOUR_MS,
   MINUTE_MS,
   planifier,
+  prochaineEcheance,
   SEUIL_MATURITE,
 } from './srs'
 import type { Carte, LogRevision } from '../types'
@@ -163,6 +164,29 @@ describe('fileDuJour', () => {
       du: T0 - JOUR_MS,
     }))
     expect(fileDuJour(dues, T0, { nouveauxRestants: 3, maxParSession: 10 })).toHaveLength(10)
+  })
+})
+
+describe('prochaineEcheance', () => {
+  it('renvoie la carte échue le plus tôt', () => {
+    const cartes: Carte[] = [
+      { ...carteEnRevision(5), motId: 'dans-3j', du: T0 + 3 * JOUR_MS },
+      { ...carteEnRevision(5), motId: 'demain', du: T0 + JOUR_MS },
+    ]
+    expect(prochaineEcheance(cartes, T0)).toBe(T0 + JOUR_MS)
+  })
+
+  it('ignore les cartes déjà dues, neuves ou suspendues', () => {
+    const cartes: Carte[] = [
+      { ...carteEnRevision(5), motId: 'deja-due', du: T0 - JOUR_MS },
+      { ...creerCarte('neuve', T0) },
+      { ...carteEnRevision(5), motId: 'ecartee', du: T0 + JOUR_MS, suspendue: true },
+    ]
+    expect(prochaineEcheance(cartes, T0)).toBeNull()
+  })
+
+  it('renvoie null sur un jeu vide', () => {
+    expect(prochaineEcheance([], T0)).toBeNull()
   })
 })
 
