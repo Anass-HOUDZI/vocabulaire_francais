@@ -132,9 +132,11 @@ export interface LogRevision {
 /* ------------------------------------------------------- État persisté */
 
 export type Theme = 'light' | 'dark' | 'system'
+export type PoliceSerif = 'cormorant' | 'eb-garamond' | 'literata'
 
 export interface Reglages {
   theme: Theme
+  policeSerif?: PoliceSerif
   /** Nombre maximum de cartes nouvelles introduites par jour. */
   nouveauxParJour: number
   /** Plafond de cartes de révision par session. */
@@ -151,6 +153,7 @@ export interface Reglages {
 
 export const REGLAGES_DEFAUT: Reglages = {
   theme: 'system',
+  policeSerif: 'cormorant',
   nouveauxParJour: 8,
   maxParSession: 30,
   audioAuto: false,

@@ -54,5 +54,21 @@ export default defineConfig({
       devOptions: { enabled: false },
     }),
   ],
+  build: {
+    target: 'esnext',
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('corpus.ts')) {
+            return 'corpus'
+          }
+          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
+            return 'vendor-react'
+          }
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+  },
   server: { port: 5174, open: false },
 })

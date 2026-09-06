@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-06T12:30:00.000Z",
+  "title": "Design System: Lexique — Édition Littéraire & Reliure Précieuse",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Cuir Garance",
+        "canonical": "#8a3d2e",
+        "tonalRamp": ["#2a0f0a", "#4a1c14", "#6e2f23", "#8a3d2e", "#a85443", "#c77564", "#e2a092", "#f5e8e3"]
+      },
+      "primary-dark": {
+        "role": "primary",
+        "displayName": "Carmin Sombre",
+        "canonical": "#6e2f23",
+        "tonalRamp": ["#200b07", "#3c150e", "#561f15", "#6e2f23", "#8f4435", "#b15f4e", "#d27d6c", "#f0a48d"]
+      },
+      "primary-soft": {
+        "role": "primary",
+        "displayName": "Voile Rosé",
+        "canonical": "#f5e8e3",
+        "tonalRamp": ["#4a3028", "#714c40", "#9b6d5f", "#c59283", "#dbaea1", "#ecc7bc", "#f5e8e3", "#fdfbf9"]
+      },
+      "primary-contrast": {
+        "role": "primary",
+        "displayName": "Blanc Immaculé",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#1c1b1f", "#48464c", "#78767d", "#a8a5ad", "#c8c5cd", "#e5e1ea", "#f4eff8", "#ffffff"]
+      },
+      "neutral-bg": {
+        "role": "neutral",
+        "displayName": "Papier Vergé Naturel",
+        "canonical": "#faf7f2",
+        "tonalRamp": ["#22201d", "#403c37", "#57524a", "#726b60", "#a8a195", "#d6cfc4", "#f2ece1", "#faf7f2"]
+      },
+      "neutral-bg-subtle": {
+        "role": "neutral",
+        "displayName": "Chamois Doux",
+        "canonical": "#f2ece1",
+        "tonalRamp": ["#1e1b17", "#3b362e", "#554e43", "#746b5d", "#9a9080", "#c2b8a7", "#e4dccf", "#f2ece1"]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Carton Ivoire",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#1a1a18", "#383733", "#575652", "#777671", "#9a9994", "#bfbeb9", "#e5e4de", "#ffffff"]
+      },
+      "surface-variant": {
+        "role": "neutral",
+        "displayName": "Parchemin Clair",
+        "canonical": "#f7f4ee",
+        "tonalRamp": ["#201e19", "#3c3932", "#59554b", "#777266", "#9a9486", "#c0baad", "#e5dfd2", "#f7f4ee"]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Filet Papier",
+        "canonical": "#e4ddd1",
+        "tonalRamp": ["#24201a", "#423c32", "#635b4d", "#867c6b", "#ab9f8c", "#c9c0b0", "#e4ddd1", "#f9f6f0"]
+      },
+      "border-strong": {
+        "role": "neutral",
+        "displayName": "Filet d'Encre",
+        "canonical": "#766e62",
+        "tonalRamp": ["#1c1a16", "#35312a", "#4f4940", "#766e62", "#988f82", "#b9b0a3", "#dad2c6", "#f4efe7"]
+      },
+      "text-primary": {
+        "role": "neutral",
+        "displayName": "Encre Noire Chaude",
+        "canonical": "#22201d",
+        "tonalRamp": ["#0d0c0a", "#181614", "#22201d", "#3b3833", "#57534d", "#77726b", "#9c968e", "#c5bfb6"]
+      },
+      "text-secondary": {
+        "role": "neutral",
+        "displayName": "Gris Sépia",
+        "canonical": "#57524a",
+        "tonalRamp": ["#181613", "#2c2924", "#413d36", "#57524a", "#767066", "#979185", "#b9b3a7", "#ded8cc"]
+      },
+      "text-muted": {
+        "role": "neutral",
+        "displayName": "Bistre Clair",
+        "canonical": "#726b60",
+        "tonalRamp": ["#1f1c18", "#37332c", "#524d43", "#726b60", "#928a7e", "#b2a99d", "#d3cbbf", "#f3ecdf"]
+      },
+      "success": {
+        "role": "tertiary",
+        "displayName": "Vert Laurier",
+        "canonical": "#1f6b45",
+        "tonalRamp": ["#082014", "#103b25", "#1f6b45", "#2a8a59", "#3cb075", "#6bd39c", "#a9e8c6", "#e4f0e9"]
+      },
+      "error": {
+        "role": "tertiary",
+        "displayName": "Rouge Vermillon",
+        "canonical": "#a32b25",
+        "tonalRamp": ["#300b09", "#571512", "#7c1e19", "#a32b25", "#c6463f", "#de6f69", "#f08d84", "#f9e7e5"]
+      },
+      "warning": {
+        "role": "tertiary",
+        "displayName": "Ocre Doré Ancien",
+        "canonical": "#8a6116",
+        "tonalRamp": ["#2b1d04", "#4a330a", "#6a4a0f", "#8a6116", "#ab7b1e", "#cca038", "#e0b14f", "#f8eeda"]
+      },
+      "info": {
+        "role": "secondary",
+        "displayName": "Bleu de Sèvres",
+        "canonical": "#2b5578",
+        "tonalRamp": ["#0b1c2b", "#16314a", "#224361", "#2b5578", "#3b6f99", "#568db8", "#85b6dd", "#e5edf5"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display (Serif Littéraire)", "purpose": "Titre héroïque de prestige, marque et vedettes majeures." },
+      "headline": { "displayName": "Headline (Serif de Section)", "purpose": "Titres de modules, sections et piliers." },
+      "title": { "displayName": "Title (Sous-titre Noble)", "purpose": "En-têtes de cartes et de fenêtres de dialogue." },
+      "body": { "displayName": "Body (Linéale Moderne)", "purpose": "Définitions, étymologies, citations littéraires et conseils d'usage." },
+      "label": { "displayName": "Label (Navigation & Boutons)", "purpose": "Boutons, filtres, badges et étiquettes métadonnées." },
+      "mono": { "displayName": "Mono (Phonétique & Touches)", "purpose": "Alphabet Phonétique International (API) et raccourcis clavier." }
+    },
+    "shadows": [
+      { "name": "Papier Fin", "value": "0 1px 2px rgb(34 32 29 / 5%), 0 6px 20px rgb(34 32 29 / 6%)", "purpose": "Élévation naturelle au repos pour les cartes." },
+      { "name": "Ombre Portée Élevée", "value": "0 2px 6px rgb(34 32 29 / 8%), 0 12px 32px rgb(34 32 29 / 10%)", "purpose": "Survol des cartes interactives et boîtes modales." },
+      { "name": "Relief Clavier", "value": "0 1px 0 var(--bordure-forte)", "purpose": "Enfoncement physique tactile pour les badges <kbd>." }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Courbe fluide pour les transitions d'état et survol." },
+      { "name": "ease-recul", "value": "ease", "purpose": "Transition rapide pour l'enfoncement physique au clic." }
+    ],
+    "breakpoints": [
+      { "name": "micro", "value": "380px" },
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "960px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Bouton Principal",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Bouton noble garance pour les actions maîtresses.",
+      "html": "<button class=\"ds-btn-primary\">Commencer la révision</button>",
+      "css": ".ds-btn-primary { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 0.95rem; font-weight: 600; padding: 0.65rem 1.25rem; border-radius: 10px; background: #8a3d2e; color: #ffffff; border: 1px solid #6e2f23; cursor: pointer; transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease; box-shadow: 0 1px 3px rgba(138, 61, 46, 0.25); display: inline-flex; align-items: center; justify-content: center; line-height: 1.35; text-decoration: none; } .ds-btn-primary:hover { background: #6e2f23; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(138, 61, 46, 0.35); } .ds-btn-primary:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Bouton Secondaire",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Bouton surface ivoire délimité par un filet d'encadrement sobre.",
+      "html": "<button class=\"ds-btn-secondary\">Consulter le lexique</button>",
+      "css": ".ds-btn-secondary { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 0.95rem; font-weight: 600; padding: 0.65rem 1.25rem; border-radius: 10px; background: #ffffff; color: #22201d; border: 1px solid #e4ddd1; cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease; display: inline-flex; align-items: center; justify-content: center; line-height: 1.35; text-decoration: none; } .ds-btn-secondary:hover { background: #f7f4ee; border-color: #8a3d2e; transform: translateY(-1px); } .ds-btn-secondary:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Bouton Danger",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Action destructrice avec affordance vermillon sécurisée.",
+      "html": "<button class=\"ds-btn-danger\">Réinitialiser les données</button>",
+      "css": ".ds-btn-danger { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 0.92rem; font-weight: 600; padding: 0.65rem 1.25rem; border-radius: 10px; background: transparent; color: #a32b25; border: 1px solid rgba(163, 43, 37, 0.4); cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease; display: inline-flex; align-items: center; justify-content: center; line-height: 1.35; } .ds-btn-danger:hover { background: #f9e7e5; border-color: #a32b25; transform: translateY(-1px); } .ds-btn-danger:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Touche Clavier Standardisée",
+      "kind": "custom",
+      "refersTo": "badge",
+      "description": "Indicateur de raccourci clavier en chasse fixe avec relief physique.",
+      "html": "<kbd class=\"ds-kbd\">Espace</kbd>",
+      "css": ".ds-kbd { font-family: ui-monospace, 'Cascadia Mono', monospace; font-size: 0.76rem; font-weight: 700; padding: 0.12rem 0.45rem; border-radius: 4px; background: #ffffff; border: 1px solid #e4ddd1; color: #57524a; box-shadow: 0 1px 0 #766e62; display: inline-block; line-height: 1.25; vertical-align: baseline; }"
+    },
+    {
+      "name": "Carte Lexicale",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Cartouche d'art littéraire avec ombre satinée et typographie à empattements.",
+      "html": "<article class=\"ds-card\"><span class=\"ds-card-badge\">Nom masculin · Littéraire</span><h3 class=\"ds-card-title\">Faquin</h3><p class=\"ds-card-text\">Individu méprisable, sans honneur ni valeur, qui se donne des airs insolents.</p></article>",
+      "css": ".ds-card { background: #ffffff; border: 1px solid #e4ddd1; border-radius: 16px; padding: 1.5rem; box-shadow: 0 1px 2px rgba(34, 32, 29, 0.05), 0 6px 20px rgba(34, 32, 29, 0.06); font-family: ui-sans-serif, system-ui, sans-serif; display: flex; flex-direction: column; gap: 0.6rem; } .ds-card-badge { font-size: 0.8rem; font-weight: 600; color: #6e2f23; background: #f5e8e3; padding: 0.15rem 0.55rem; border-radius: 999px; width: fit-content; } .ds-card-title { font-family: 'Iowan Old Style', Palatino, Garamond, Georgia, serif; font-size: 1.45rem; font-weight: 700; color: #22201d; margin: 0; } .ds-card-text { font-size: 0.95rem; color: #57524a; line-height: 1.6; margin: 0; }"
+    },
+    {
+      "name": "Champ de Recherche",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Champ de saisie ergonomique à contour garance au focus.",
+      "html": "<input type=\"text\" class=\"ds-input\" placeholder=\"Rechercher un mot, une racine...\" />",
+      "css": ".ds-input { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 0.95rem; padding: 0.65rem 1rem; border-radius: 10px; background: #ffffff; color: #22201d; border: 1px solid #e4ddd1; width: 100%; box-sizing: border-box; transition: border-color 0.15s ease, box-shadow 0.15s ease; } .ds-input:focus-visible { outline: none; border-color: #8a3d2e; box-shadow: 0 0 0 3px rgba(138, 61, 46, 0.16); }"
+    },
+    {
+      "name": "Onglet de Navigation",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Lien de navigation supérieure avec fond rosé subtil lors de l'activation.",
+      "html": "<div style=\"display:flex; gap:0.5rem;\"><a href=\"#reviser\" class=\"ds-nav-tab ds-nav-tab--active\">Réviser</a><a href=\"#lexique\" class=\"ds-nav-tab\">Lexique</a></div>",
+      "css": ".ds-nav-tab { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 0.92rem; font-weight: 600; padding: 0.5rem 0.9rem; border-radius: 10px; color: #57524a; text-decoration: none; display: inline-flex; align-items: center; border: 1px solid transparent; transition: background 0.15s, color 0.15s; } .ds-nav-tab:hover { background: #f7f4ee; color: #22201d; } .ds-nav-tab--active { background: #f5e8e3; color: #6e2f23; border-color: rgba(138, 61, 46, 0.25); }"
+    },
+    {
+      "name": "Bouton Mode Zen",
+      "kind": "button",
+      "refersTo": "button-discrete",
+      "description": "Bascule d'immersion plein écran estompant l'en-tête et le pied de page.",
+      "html": "<button class=\"ds-btn-zen\"><span>🌿</span><span>Mode Zen</span><kbd>Z</kbd></button>",
+      "css": ".ds-btn-zen { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 0.78rem; font-weight: 600; padding: 0.22rem 0.65rem; border-radius: 999px; border: 1px solid #e4ddd1; background: #ffffff; color: #57524a; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease; } .ds-btn-zen:hover { background: #f7f4ee; color: #22201d; border-color: #766e62; } .ds-btn-zen kbd { font-family: ui-monospace, monospace; font-size: 0.7em; padding: 0.08em 0.35em; border-radius: 4px; border: 1px solid #e4ddd1; background: #ffffff; box-shadow: 0 1px 0 #766e62; margin-left: 0.15rem; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "L'Édition Littéraire & la Reliure Précieuse",
+    "overview": "L'identité visuelle de Lexique puise son inspiration dans la tradition séculaire de l'édition d'art française (La Pléiade, Gallimard, l'Imprimerie Nationale) et des dictionnaires historiques de référence (Littré, Robert historique). À l'opposé des interfaces criardes ou infantilistes du micro-apprentissage de masse, Lexique célèbre l'érudition, la clarté et le plaisir sensoriel du livre de belle facture. En mode clair, l'application évoque la douceur tactile d'un papier vergé ivoire chaud (#faf7f2), l'encre d'imprimerie dense (#22201d) et les rehauts de cuir garance carmin (#8a3d2e). En mode sombre, l'espace se métamorphose en cabinet de lecture nocturne avec des fonds ébène texturés (#15141a) et des accents terracotta veloutés (#e08a72).",
+    "keyCharacteristics": [
+      "Élégance éditoriale sobre : Filets d'encadrement délicats (1px solid var(--bordure)), ombres satinées discrètes, refus absolu des bordures 3D plastifiées.",
+      "Typographie classique & moderne : Titrages et citations en typographie à empattements patrimoniale (Iowan Old Style, Palatino, Garamond), texte d'interface et exercices en linéale moderne limpide (ui-sans-serif).",
+      "Confort de lecture prolongé : Contrastes étudiés pour minimiser la fatigue oculaire, dépassant largement les seuils WCAG 2.2 niveau AA.",
+      "Rigueur d'accessibilité sans compromis : Toute information portée par une couleur est systématiquement étayée par un texte explicite, un symbole ou une icône sémantique."
+    ],
+    "rules": [
+      { "name": "The One Voice Rule", "body": "Le cuir garance (--accent) est réservé aux intentions majeures (actions clés, ancrage actif, mot vedette). Il couvre au plus 10 % de la surface perçue.", "section": "colors" },
+      { "name": "The Ink Density Rule", "body": "Le texte principal (--texte) est une encre d'imprimerie chaude (#22201d) dépassant 15:1 de contraste sur papier vergé, évitant le noir pur brut #000000.", "section": "colors" },
+      { "name": "The Semantic Reinforcement Rule", "body": "Aucune validation n'est confiée à la seule couleur : tout statut est accompagné d'un glyphe (✓, ✕, ℹ) et d'un libellé textuel explicite.", "section": "colors" },
+      { "name": "The Literary Serif Rule", "body": "Tout mot vedette, citation d'auteur ou grand titre s'écrit obligatoirement en typographie serif. Les linéales sont réservées aux commandes d'interaction.", "section": "typography" },
+      { "name": "The Monospace Phonetic Rule", "body": "L'Alphabet Phonétique International (API) et les raccourcis clavier sont strictement composés en chasse fixe.", "section": "typography" },
+      { "name": "The 44px Touch Floor Rule", "body": "Tout élément cliquable ou tapotable offre une cible d'au moins 44 × 44 px sur mobile.", "section": "layout" },
+      { "name": "The Dual Column Mobile Matrix Rule", "body": "La grille d'évaluation SRS passe en matrice 2×2 sous 640px pour prévenir les erreurs de rappel.", "section": "layout" },
+      { "name": "The Paper Over Plastic Rule", "body": "Pas de dégradés brillants ni de bordures 3D biseautées. La profondeur est suggérée par la superposition délicate de feuillets.", "section": "elevation" },
+      { "name": "The Disciplined Radius Rule", "body": "Aucun rayon arbitraire n'est introduit en dehors des 4 échelons officiels (6px, 10px, 16px, 999px).", "section": "shapes" }
+    ],
+    "dos": [
+      "Do respecter scrupuleusement la palette canonique : papier vergé (#faf7f2), cuir garance (#8a3d2e) et encre chaude (#22201d).",
+      "Do composer tous les titres, mots vedettes et citations littéraires en typographie à empattements (var(--serif)).",
+      "Do garantir une zone de contact minimale de 44 × 44 px sur tous les éléments interactifs tactiles.",
+      "Do styliser les raccourcis clavier avec la balise sémantique <kbd>.",
+      "Do employer la classe .btn--danger avec confirmation pour toute action de suppression ou de réinitialisation de données.",
+      "Do associer systématiquement un glyphe sémantique et un libellé textuel aux retours d'état colorés."
+    ],
+    "donts": [
+      "Don't utiliser de noir pur (#000000) sur blanc pur (#ffffff) ; privilégier toujours les teintes chaudes adoucies.",
+      "Don't introduire de styles en ligne arbitraires (style={{ ... }}) en dehors des grandeurs calculées à l'exécution.",
+      "Don't employer de bordures 3D biseautées, de plastification ni d'effets visuels de jeu vidéo enfantin.",
+      "Don't afficher de couleurs de validation (vert ou rouge) sans symbole explicite (✓, ✕) ni libellé textuel.",
+      "Don't descendre sous les contrastes minimaux WCAG 2.2 AA (4.5:1 pour le texte courant, 3:1 pour les composants)."
+    ]
+  }
+}

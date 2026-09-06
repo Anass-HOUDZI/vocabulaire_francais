@@ -13,7 +13,7 @@
  * Ne sont stockées que les données que l'utilisateur a produites.
  */
 
-import type { Carte, EtatPersiste, Reglages } from '../types'
+import type { Carte, EtatPersiste, Mot, Reglages } from '../types'
 import { REGLAGES_DEFAUT, PROGRESSION_DEFAUT } from '../types'
 
 const CLE = 'lexique.etat.v1'
@@ -123,4 +123,40 @@ export function importerJSON(texte: string): EtatPersiste | null {
   } catch {
     return null
   }
+}
+
+/* ------------------------------------------------- Export Anki TSV */
+
+/**
+ * Exporte une liste de mots sous forme de tableau TSV UTF-8 reconnu nativement par Anki.
+ * Format structuré avec en-têtes et tags de domaine pour une révision immédiate.
+ */
+export function exporterAnkiTSV(mots: readonly Mot[]): string {
+  const enTete = [
+    '#separator:tab',
+    '#html:true',
+    '#tags column:8',
+    'Mot\tPrononciation (API)\tNature\tDéfinition\tExemple littéraire\tÉtymologie\tSynonymes / Antonymes\tDomaine',
+  ].join('\n')
+
+  const lignes = mots.map((m) => {
+    const mot = m.mot.replace(/\t/g, ' ')
+    const api = m.api ? m.api.replace(/\t/g, ' ') : ''
+    const nature = [m.categorie, m.registre].filter(Boolean).join(' · ').replace(/\t/g, ' ')
+    const def = m.definition.replace(/\t/g, ' ').replace(/\n/g, '<br>')
+    const ex = m.exemple ? m.exemple.replace(/\t/g, ' ').replace(/\n/g, '<br>') : ''
+    const etymo = m.etymologie ? m.etymologie.replace(/\t/g, ' ').replace(/\n/g, '<br>') : ''
+    const relations = [
+      m.synonymes?.length ? `Syn. : ${m.synonymes.join(', ')}` : '',
+      m.antonymes?.length ? `Ant. : ${m.antonymes.join(', ')}` : '',
+    ]
+      .filter(Boolean)
+      .join(' | ')
+      .replace(/\t/g, ' ')
+    const domaine = (m.theme || 'Général').replace(/\t/g, ' ')
+
+    return `${mot}\t${api}\t${nature}\t${def}\t${ex}\t${etymo}\t${relations}\t${domaine}`
+  })
+
+  return [enTete, ...lignes].join('\n')
 }

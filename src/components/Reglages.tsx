@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useApp } from '../store/AppContext'
 import { useSynthese } from '../hooks/useSynthese'
-import { exporterJSON, importerJSON } from '../lib/stockage'
+import { exporterAnkiTSV, exporterJSON, importerJSON } from '../lib/stockage'
 import { LEXIQUE } from '../data/lexique'
 
 export default function Reglages() {
@@ -22,27 +22,42 @@ export default function Reglages() {
     URL.revokeObjectURL(url)
   }
 
+  function telechargerAnki() {
+    const blob = new Blob([exporterAnkiTSV(LEXIQUE)], { type: 'text/tab-separated-values;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `lexique-anki-${LEXIQUE.length}-mots.tsv`
+    a.click()
+    URL.revokeObjectURL(url)
+    setMessage({ type: 'ok', texte: `Deck Anki généré avec succès (${LEXIQUE.length} fiches).` })
+  }
+
   async function importer(f: File) {
-    const texte = await f.text()
-    const importe = importerJSON(texte)
-    if (!importe) {
-      setMessage({ type: 'erreur', texte: "Fichier illisible : l'état actuel n'a pas été modifié." })
-      return
+    try {
+      const texte = await f.text()
+      const importe = importerJSON(texte)
+      if (!importe) {
+        setMessage({ type: 'erreur', texte: "Fichier illisible : l'état actuel n'a pas été modifié." })
+        return
+      }
+      remplacer(importe)
+      setMessage({
+        type: 'ok',
+        texte: `Progression restaurée : ${Object.keys(importe.cartes).length} cartes, ${importe.logs.length} révisions.`,
+      })
+    } catch {
+      setMessage({ type: 'erreur', texte: "Impossible de lire le fichier sélectionné." })
     }
-    remplacer(importe)
-    setMessage({
-      type: 'ok',
-      texte: `Progression restaurée : ${Object.keys(importe.cartes).length} cartes, ${importe.logs.length} révisions.`,
-    })
   }
 
   return (
     <section aria-labelledby="titre-reglages">
-      <h2 id="titre-reglages" className="section-titre">
+      <h1 id="titre-reglages" className="section-titre">
         Réglages
-      </h2>
+      </h1>
 
-      <div className="carte" style={{ padding: '0.5rem 1.25rem' }}>
+      <div className="carte reglages__carte">
         <div className="reglage">
           <div>
             <label htmlFor="r-theme">Thème</label>
@@ -58,6 +73,24 @@ export default function Reglages() {
             <option value="system">Système</option>
             <option value="light">Clair</option>
             <option value="dark">Sombre</option>
+          </select>
+        </div>
+
+        <div className="reglage">
+          <div>
+            <label htmlFor="r-police">Typographie de lecture</label>
+            <p className="reglage__desc">
+              Famille typographique sérif pour les termes, citations littéraires et définitions.
+            </p>
+          </div>
+          <select
+            id="r-police"
+            value={r.policeSerif || 'cormorant'}
+            onChange={(e) => majReglages({ policeSerif: e.target.value as typeof r.policeSerif })}
+          >
+            <option value="cormorant">Cormorant Garamond (Haute reliure classique)</option>
+            <option value="eb-garamond">EB Garamond (Édition académique sobre)</option>
+            <option value="literata">Literata (Confort de lecture écran)</option>
           </select>
         </div>
 
@@ -94,7 +127,6 @@ export default function Reglages() {
             max="50"
             value={r.nouveauxParJour}
             onChange={(e) => majReglages({ nouveauxParJour: Number(e.target.value) })}
-            style={{ width: '5rem' }}
           />
         </div>
 
@@ -112,7 +144,6 @@ export default function Reglages() {
             max="200"
             value={r.maxParSession}
             onChange={(e) => majReglages({ maxParSession: Number(e.target.value) })}
-            style={{ width: '5rem' }}
           />
         </div>
 
@@ -155,7 +186,7 @@ export default function Reglages() {
             <label htmlFor="r-debit">Débit de la voix</label>
             <p className="reglage__desc">{r.debitVoix.toFixed(2)}× — un débit lent aide sur les mots longs.</p>
           </div>
-          <span style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <span className="reglage__debit-boite">
             <input
               id="r-debit"
               type="range"
@@ -177,22 +208,41 @@ export default function Reglages() {
         </div>
       </div>
 
-      <h3 className="section-titre" style={{ marginTop: '1.5rem' }}>
+      <h3 className="section-titre">
         Données
       </h3>
 
-      <div className="carte" style={{ padding: '1.25rem' }}>
-        <p className="reglage__desc" style={{ marginTop: 0 }}>
+      <div className="carte reglages__carte-large">
+        <p className="reglage__desc reglages__desc-premier">
           Tout est stocké dans ce navigateur, rien n'est envoyé sur un serveur. Vider les données du
           site effacerait votre progression : exportez-la régulièrement. Le lexique ({LEXIQUE.length}{' '}
           mots) est livré avec l'application et n'a pas besoin d'être sauvegardé.
         </p>
 
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.9rem' }}>
-          <button type="button" className="btn" onClick={telecharger}>
+        <div className="reglages__actions-donnees">
+          <button
+            type="button"
+            className="btn"
+            onClick={telecharger}
+            aria-label="Exporter ma progression au format JSON"
+          >
             ⭳ Exporter ma progression
           </button>
-          <button type="button" className="btn" onClick={() => fichier.current?.click()}>
+          <button
+            type="button"
+            className="btn"
+            onClick={telechargerAnki}
+            title="Génère un tableau TSV directement importable dans Anki"
+            aria-label="Exporter le lexique complet pour Anki au format TSV"
+          >
+            ⭳ Exporter pour Anki (.tsv)
+          </button>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => fichier.current?.click()}
+            aria-label="Importer un fichier de sauvegarde JSON"
+          >
             ⭱ Importer un fichier
           </button>
           <input
@@ -208,8 +258,7 @@ export default function Reglages() {
           />
           <button
             type="button"
-            className="btn"
-            style={{ marginLeft: 'auto', color: 'var(--erreur)', borderColor: 'var(--erreur)' }}
+            className="btn btn--danger btn--align-droite"
             onClick={() => {
               if (
                 window.confirm(
@@ -227,9 +276,8 @@ export default function Reglages() {
 
         {message && (
           <p
-            className={message.type === 'ok' ? 'verdict verdict--juste' : 'verdict verdict--faux'}
+            className={message.type === 'ok' ? 'verdict verdict--juste reglages__message' : 'verdict verdict--faux reglages__message'}
             role="status"
-            style={{ marginTop: '1rem' }}
           >
             <span aria-hidden="true">{message.type === 'ok' ? '✓' : '✕'}</span>
             <span>{message.texte}</span>
@@ -237,12 +285,12 @@ export default function Reglages() {
         )}
       </div>
 
-      <h3 className="section-titre" style={{ marginTop: '1.5rem' }}>
+      <h3 className="section-titre">
         Sources
       </h3>
 
-      <div className="carte" style={{ padding: '1.25rem' }}>
-        <p className="reglage__desc" style={{ marginTop: 0, marginBottom: '0.6rem' }}>
+      <div className="carte reglages__carte-large">
+        <p className="reglage__desc reglages__desc-premier">
           La prononciation (transcription API, découpe syllabique) de chaque mot provient de la
           base{' '}
           <a href="http://www.lexique.org/" target="_blank" rel="noreferrer">
@@ -258,7 +306,7 @@ export default function Reglages() {
           </a>
           . Aucune phonétique n'est générée : c'est une règle vérifiée par les tests du projet.
         </p>
-        <p className="reglage__desc" style={{ marginBottom: 0 }}>
+        <p className="reglage__desc reglages__desc-dernier">
           Définitions, exemples, mésusages et exercices sont des contenus originaux, rédigés puis
           relus de façon contradictoire — jamais extraits d'un dictionnaire sous droits. Détail
           complet dans <code>LICENCE-DONNEES.md</code> à la racine du projet.

@@ -24,7 +24,13 @@ const NOTES_PRESENTATION: Note[] = [0, 2, 3]
 /** Nombre maximum de repassages d'une même carte dans une seule session. */
 const MAX_REPASSAGES = 2
 
-export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => void }) {
+export default function Reviser({
+  onOuvrirLexique,
+  limiteInitiale,
+}: {
+  onOuvrirLexique: () => void
+  limiteInitiale?: number
+}) {
   const { etat, noter, suspendre, nouveauxRestants } = useApp()
   const synthese = useSynthese(etat.reglages.debitVoix)
 
@@ -60,7 +66,7 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
   )
 
   useEffect(() => {
-    demarrer()
+    demarrer(limiteInitiale)
     // Une seule construction de file au montage.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -120,11 +126,29 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
     [motId, carte, noter, exercice, reponse],
   )
 
-  // Raccourcis 1–4 pour la notation, actifs uniquement quand les boutons le sont.
+  const [guideVu, setGuideVu] = useState(() => {
+    try {
+      return localStorage.getItem('lexique_guide_vu') === '1'
+    } catch {
+      return false
+    }
+  })
+
+  // Raccourcis 1–4 pour la notation, et Espace pour la validation rapide.
   useEffect(() => {
     if (!notesDisponibles.length) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement) return
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+      
+      if (e.key === ' ' || e.code === 'Space') {
+        e.preventDefault()
+        const noteDefaut = notesDisponibles.includes(2) ? 2 : notesDisponibles[0]
+        if (noteDefaut !== undefined) {
+          enregistrer(noteDefaut)
+          return
+        }
+      }
+
       const i = Number(e.key) - 1
       const note = notesDisponibles[i]
       if (note !== undefined) {
@@ -136,11 +160,38 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
     return () => window.removeEventListener('keydown', onKey)
   }, [notesDisponibles, enregistrer])
 
-  // Lecture automatique du mot à la correction, si l'utilisateur l'a demandé.
+  const [zen, setZen] = useState(false)
+
+  // Mode Zen : bascule de la classe body et raccourcis clavier Z / Échap
   useEffect(() => {
-    if (etat.reglages.audioAuto && reponse && mot) synthese.parler(mot.mot)
+    document.body.classList.toggle('mode-zen', zen)
+    return () => {
+      document.body.classList.remove('mode-zen')
+    }
+  }, [zen])
+
+  useEffect(() => {
+    const onKeyZen = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+      if (e.key === 'z' || e.key === 'Z') {
+        e.preventDefault()
+        setZen((z) => !z)
+      } else if (e.key === 'Escape' && zen) {
+        e.preventDefault()
+        setZen(false)
+      }
+    }
+    window.addEventListener('keydown', onKeyZen)
+    return () => window.removeEventListener('keydown', onKeyZen)
+  }, [zen])
+
+  // Lecture automatique du mot à la correction ou à la découverte, si l'utilisateur l'a demandé.
+  useEffect(() => {
+    if (etat.reglages.audioAuto && mot && (reponse || carte?.etat === 'nouveau')) {
+      synthese.parler(mot.mot)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reponse, mot?.id])
+  }, [reponse, mot?.id, carte?.etat])
 
   /* ----------------------------------------------------------- Rendus */
 
@@ -171,16 +222,16 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
             </>
           )}
         </p>
-        <p style={{ color: 'var(--texte-3)', fontSize: '0.9rem', maxWidth: '32rem', margin: '0.6rem auto 0' }}>
+        <p className="vide__astuce">
           C'est le fonctionnement normal de la répétition espacée : réviser plus tôt qu'il ne faut
           n'améliore pas la mémorisation, cela ne fait qu'alourdir les jours suivants. Pour avancer
           plus vite, relevez le quota quotidien dans les réglages — en connaissance de cause.
         </p>
-        <p style={{ marginTop: '1.2rem' }}>
+        <div className="vide__actions">
           <button type="button" className="btn" onClick={onOuvrirLexique}>
             Parcourir le lexique
           </button>
-        </p>
+        </div>
       </div>
     )
   }
@@ -197,7 +248,7 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
           {bilan.vus} carte{bilan.vus > 1 ? 's' : ''} revue{bilan.vus > 1 ? 's' : ''}, {taux} % de
           rappel réussi.
         </p>
-        <p style={{ marginTop: '1.2rem', display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+        <div className="vide__actions">
           {/* Sans la lambda, l'événement de clic partirait en `limiteNouveaux`. */}
           <button type="button" className="btn btn--principal" onClick={() => demarrer()}>
             Nouvelle session
@@ -205,7 +256,7 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
           <button type="button" className="btn" onClick={onOuvrirLexique}>
             Parcourir le lexique
           </button>
-        </p>
+        </div>
       </div>
     )
   }
@@ -215,9 +266,12 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
   return (
     <div className="session">
       <div className="session__barre">
-        <span>
-          {index + 1} / {file.length}
-        </span>
+        <div className="session__compteur-capsule" aria-live="polite" aria-atomic="true">
+          <span className="session__compteur-icone" aria-hidden="true">📖</span>
+          <span className="session__compteur">
+            {index + 1} / {file.length}
+          </span>
+        </div>
         <div
           className="jauge"
           role="progressbar"
@@ -228,13 +282,28 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
         >
           <div className="jauge__remplissage" style={{ width: `${progression}%` }} />
         </div>
-        <span>
-          {carte.etat === 'nouveau'
-            ? 'nouveau mot'
-            : carte.etat === 'revision'
-              ? 'révision'
-              : 'apprentissage'}
-        </span>
+        <div className={`session__etat session__etat--${carte.etat}`}>
+          <span className="session__etat-point" aria-hidden="true" />
+          <span className="session__etat-texte">
+            {carte.etat === 'nouveau'
+              ? 'nouveau mot'
+              : carte.etat === 'revision'
+                ? 'révision'
+                : 'apprentissage'}
+          </span>
+        </div>
+        <button
+          type="button"
+          className={`session__btn-zen ${zen ? 'session__btn-zen--actif' : ''}`}
+          onClick={() => setZen((z) => !z)}
+          title={zen ? 'Quitter le mode Zen (Touche Z ou Échap)' : 'Activer le mode Zen immersif (Touche Z)'}
+          aria-label={zen ? 'Quitter le mode Zen' : 'Activer le mode Zen plein écran'}
+          aria-pressed={zen}
+        >
+          <span aria-hidden="true">{zen ? '✕' : '🌿'}</span>
+          <span className="session__btn-zen-libelle">{zen ? 'Quitter' : 'Mode Zen'}</span>
+          <kbd aria-hidden="true">Z</kbd>
+        </button>
       </div>
 
       <div className="carte">
@@ -268,7 +337,7 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
               }}
             />
             {reponse && (
-              <div style={{ borderTop: '1px solid var(--bordure)' }}>
+              <div className="session__fiche-separateur">
                 <FicheMot mot={mot} carte={carte} synthese={synthese} />
               </div>
             )}
@@ -276,25 +345,50 @@ export default function Reviser({ onOuvrirLexique }: { onOuvrirLexique: () => vo
         )}
 
         {notesDisponibles.length > 0 && (
-          <div style={{ padding: '0 1.5rem 1.5rem' }}>
-            <p className="exercice__etiquette" style={{ marginBottom: '0.4rem' }}>
+          <div className="session__evaluation-bloc">
+            {!guideVu && (
+              <div className="onboarding-conseil" role="note">
+                <span className="onboarding-conseil__icone" aria-hidden="true">💡</span>
+                <div className="onboarding-conseil__texte">
+                  <strong>Principe SM-2 :</strong> Choisissez avec franchise. Si le rappel est hésitant, cliquez sur « À revoir » sans crainte : l'algorithme le replacera au moment optimal pour ancrer sa rétention définitive. Raccourcis : touches <strong>1</strong>–<strong>{notesDisponibles.length}</strong> ou <kbd>Espace</kbd>.
+                </div>
+                <button
+                  type="button"
+                  className="onboarding-conseil__fermer"
+                  onClick={() => {
+                    setGuideVu(true)
+                    try { localStorage.setItem('lexique_guide_vu', '1') } catch {}
+                  }}
+                  aria-label="Masquer ce conseil"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+            <p className="exercice__etiquette session__evaluation-question">
               {carte.etat === 'nouveau'
                 ? 'Vous connaissiez déjà ce mot ?'
                 : 'À quel point le rappel a-t-il été facile ?'}
             </p>
-            <div className="notes" style={{ gridTemplateColumns: `repeat(${notesDisponibles.length}, 1fr)` }}>
-              {notesDisponibles.map((note, i) => (
-                <button
-                  key={note}
-                  type="button"
-                  className="note-btn"
-                  onClick={() => enregistrer(note)}
-                >
-                  <span>{LIBELLE_NOTE[note]}</span>
-                  <small>{apercu?.[note]}</small>
-                  <kbd aria-hidden="true">{i + 1}</kbd>
-                </button>
-              ))}
+            <div className="notes" style={{ '--nb-notes': notesDisponibles.length } as React.CSSProperties}>
+              {notesDisponibles.map((note, i) => {
+                const estDefaut = (notesDisponibles.includes(2) && note === 2) || (!notesDisponibles.includes(2) && i === 0)
+                return (
+                  <button
+                    key={note}
+                    type="button"
+                    className={`note-btn ${estDefaut ? 'note-btn--defaut' : ''}`}
+                    onClick={() => enregistrer(note)}
+                  >
+                    <span>{LIBELLE_NOTE[note]}</span>
+                    <small>{apercu?.[note]}</small>
+                    <div className="note-btn__raccourcis">
+                      <kbd aria-hidden="true">{i + 1}</kbd>
+                      {estDefaut && <kbd aria-hidden="true" title="Touche Espace pour valider rapidement">␣</kbd>}
+                    </div>
+                  </button>
+                )
+              })}
             </div>
           </div>
         )}

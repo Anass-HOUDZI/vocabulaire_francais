@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Accueil from './components/Accueil'
 import Entete from './components/Entete'
+import Pied from './components/Pied'
 import Reviser from './components/Reviser'
 import Lexique from './components/Lexique'
 import Progression from './components/Progression'
@@ -41,6 +42,11 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
 
+  useEffect(() => {
+    const police = etat.reglages.policeSerif || 'cormorant'
+    document.documentElement.setAttribute('data-police', police)
+  }, [etat.reglages.policeSerif])
+
   const aReviser = useMemo(
     () =>
       fileDuJour(Object.values(etat.cartes), Date.now(), {
@@ -50,30 +56,47 @@ export default function App() {
     [etat.cartes, nouveauxRestants, etat.reglages.maxParSession],
   )
 
+  const [limiteSession, setLimiteSession] = useState<number | undefined>(undefined)
+
   return (
     <div className="app">
       <a className="saut-contenu" href="#contenu">
         Aller au contenu
       </a>
 
-      <Entete onChange={setOnglet} aReviser={aReviser} />
+      <Entete onglet={onglet} onChange={setOnglet} aReviser={aReviser} />
 
       <main className="contenu" id="contenu" tabIndex={-1}>
         {etatSauvegarde !== 'ok' && (
-          <p className="avertissement" role="alert" style={{ marginBottom: '1rem' }}>
+          <p className="avertissement" role="alert">
             <strong>Progression non sauvegardée. </strong>
             {MESSAGE_SAUVEGARDE[etatSauvegarde]}
           </p>
         )}
 
-        {onglet === 'accueil' && <Accueil onCommencer={() => setOnglet('reviser')} onOuvrirLexique={() => setOnglet('lexique')} />}
-        {onglet === 'reviser' && <Reviser onOuvrirLexique={() => setOnglet('lexique')} />}
+        {onglet === 'accueil' && (
+          <Accueil
+            onCommencer={(limite) => {
+              setLimiteSession(limite)
+              setOnglet('reviser')
+            }}
+            onOuvrirLexique={() => setOnglet('lexique')}
+          />
+        )}
+        {onglet === 'reviser' && (
+          <Reviser
+            onOuvrirLexique={() => setOnglet('lexique')}
+            limiteInitiale={limiteSession}
+          />
+        )}
         {onglet === 'lexique' && <Lexique />}
         {onglet === 'progression' && <Progression />}
         {onglet === 'reglages' && <Reglages />}
         {onglet === 'legales' && <Legales />}
         {onglet === 'contacts' && <Contacts />}
       </main>
+
+      <Pied onglet={onglet} onChange={setOnglet} />
     </div>
   )
 }

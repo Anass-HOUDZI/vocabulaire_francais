@@ -35,41 +35,40 @@ export default function Progression() {
 
   return (
     <section aria-labelledby="titre-progression">
-      <h2 id="titre-progression" className="section-titre">
-        Progression & Joueur
-      </h2>
+      <h1 id="titre-progression" className="section-titre">
+        Progression
+      </h1>
 
       {etat.progression && (
-        <div className="carte" style={{ padding: '1.25rem', marginBottom: '1.5rem', background: 'var(--arriere-plan)', border: '1px solid var(--bordure-forte)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+        <div className="carte progression__resume-carte">
+          <div className="progression__resume-entete">
             <div>
-              <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--principal)' }}>Niveau {etat.progression.niveau}</h3>
-              <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--texte-2)' }}>{etat.progression.xp} XP au total</p>
+              <h3 className="progression__niveau-titre">Niveau {etat.progression.niveau}</h3>
+              <p className="progression__xp-texte">{etat.progression.xp} XP au total</p>
             </div>
-            <div style={{ textAlign: 'right' }}>
-              <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#FFD700' }}>🪙 {etat.progression.monnaie}</span>
-              <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--texte-2)' }}>Gels disponibles : {etat.progression.gelDeSerie}</p>
+            <div className="progression__monnaie-bloc">
+              <span className="progression__monnaie-valeur">🪙 {etat.progression.monnaie}</span>
+              <p className="progression__gels-texte">Gels disponibles : {etat.progression.gelDeSerie}</p>
             </div>
           </div>
-          <div className="jauge" style={{ height: '8px', marginBottom: '1rem' }}>
-            <div className="jauge__remplissage" style={{ width: `${(etat.progression.xp % 100)}%`, background: 'var(--principal)' }} />
+          <div className="jauge progression__jauge">
+            <div className="jauge__remplissage" style={{ width: `${(etat.progression.xp % 100)}%`, background: 'var(--accent)' }} />
           </div>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div className="progression__actions">
             <button 
-              className="btn btn--principal" 
+              className="btn btn--principal progression__btn-achat" 
               onClick={acheterGel} 
               disabled={etat.progression.monnaie < 100}
-              style={{ fontSize: '0.85rem' }}
             >
-              Acheter Gel (100 🪙)
+              Acheter un gel de série (100 🪙)
             </button>
           </div>
           {etat.progression.badges.length > 0 && (
-            <div style={{ marginTop: '1rem' }}>
-              <strong style={{ fontSize: '0.85rem', color: 'var(--texte-2)', textTransform: 'uppercase' }}>Badges obtenus :</strong>
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.4rem' }}>
+            <div className="progression__badges-bloc">
+              <strong className="progression__badges-titre">Badges obtenus :</strong>
+              <div className="progression__badges-liste">
                 {etat.progression.badges.map(b => (
-                  <span key={b} style={{ background: 'var(--info)', color: 'white', padding: '0.2rem 0.5rem', borderRadius: '1rem', fontSize: '0.8rem' }}>
+                  <span key={b} className="progression__badge-pastille">
                     {b === 'parfait' ? '🌟 Parfait' : b === 'oiseau-de-nuit' ? '🦉 Oiseau de nuit' : b}
                   </span>
                 ))}
@@ -101,13 +100,13 @@ export default function Progression() {
       </div>
 
       {stats.retention30j === null && (
-        <p className="avertissement" style={{ marginBottom: '1.25rem' }}>
+        <p className="avertissement">
           Le taux de rappel se calcule sur les révisions de mots déjà appris. Il apparaîtra après
           quelques jours d'utilisation — un chiffre calculé sur trois révisions ne voudrait rien dire.
         </p>
       )}
 
-      <div className="carte" style={{ padding: '1.25rem', marginBottom: '1rem' }}>
+      <div className="carte progression__carte-section">
         <h3 className="bloc__titre">Répartition des {actives} mots suivis</h3>
         <div className="repartition" role="img" aria-label={parts.map((p) => `${p.libelle} : ${p.valeur}`).join(', ')}>
           {parts.map((p) => (
@@ -127,14 +126,14 @@ export default function Progression() {
         </p>
       </div>
 
-      <div className="carte" style={{ padding: '1.25rem', marginBottom: '1rem' }}>
+      <div className="carte progression__carte-section">
         <h3 className="bloc__titre">Charge de révision prévue</h3>
         <div className="histogramme">
           {stats.chargePrevue.map((n, i) => {
             const jour = new Date(Date.now() + i * JOUR_MS)
             return (
               <div className="histogramme__barre" key={i}>
-                <span style={{ fontSize: '0.72rem', color: 'var(--texte-2)' }}>{n}</span>
+                <span className="histogramme__nombre">{n}</span>
                 <div
                   className="histogramme__valeur"
                   style={{ height: `${(n / maxCharge) * 100}%` }}
@@ -148,22 +147,22 @@ export default function Progression() {
             )
           })}
         </div>
-        <p className="reglage__desc" style={{ marginTop: '0.4rem' }}>
+        <p className="reglage__desc progression__desc-court">
           Une charge qui s'envole signale un rythme de mots nouveaux trop élevé : chaque mot introduit
           aujourd'hui revient quatre à cinq fois dans le mois.
         </p>
       </div>
 
       {recalcitrants.length > 0 && (
-        <div className="carte" style={{ padding: '1.25rem' }}>
+        <div className="carte progression__carte-section">
           <h3 className="bloc__titre">Mots les plus résistants</h3>
-          <ul style={{ margin: 0, paddingLeft: '1.1rem' }}>
+          <ul className="progression__recalcitrants-liste">
             {recalcitrants.map(({ carte, mot }) => (
-              <li key={carte.motId} style={{ marginBottom: '0.3rem' }}>
-                <strong lang="fr" style={{ fontFamily: 'var(--serif)' }}>
+              <li key={carte.motId} className="progression__recalcitrant-item">
+                <strong lang="fr" className="progression__recalcitrant-mot">
                   {mot?.mot}
                 </strong>{' '}
-                <span style={{ color: 'var(--texte-3)', fontSize: '0.88rem' }}>
+                <span className="progression__recalcitrant-stats">
                   — {carte.echecs} oubli{carte.echecs > 1 ? 's' : ''}
                   {carte.rechutes > 0 && `, ${carte.rechutes} rechute${carte.rechutes > 1 ? 's' : ''}`}
                 </span>
@@ -173,7 +172,7 @@ export default function Progression() {
         </div>
       )}
 
-      <p className="reglage__desc" style={{ marginTop: '1rem' }}>
+      <p className="reglage__desc progression__note-bas">
         Journée en cours : {jourLogique(Date.now())} (la journée bascule à 4 h du matin).
       </p>
     </section>

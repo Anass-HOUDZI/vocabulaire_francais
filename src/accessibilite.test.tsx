@@ -53,11 +53,20 @@ function ongletNav(nom: string) {
   return within(nav).getByRole('button', { name: new RegExp(`^${nom}`) })
 }
 
+let axeVerrou = Promise.resolve()
+
 async function violations(element: HTMLElement) {
-  const resultat = await axe.run(element, {
-    rules: { 'color-contrast': { enabled: false } },
-    resultTypes: ['violations'],
-  })
+  const promesse = axeVerrou.then(() =>
+    axe.run(element, {
+      rules: { 'color-contrast': { enabled: false } },
+      resultTypes: ['violations'],
+    }),
+  )
+  axeVerrou = promesse.then(
+    () => {},
+    () => {},
+  )
+  const resultat = await promesse
   return resultat.violations.filter((v) => BLOQUANTS.has(v.impact ?? ''))
 }
 

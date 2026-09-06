@@ -38,24 +38,14 @@ export default class Garde extends Component<{ children: ReactNode }, Etat> {
             Votre progression est enregistrée dans ce navigateur et n'a pas été perdue. Recharger la
             page devrait suffire.
           </p>
-          <pre
-            style={{
-              textAlign: 'left',
-              overflowX: 'auto',
-              background: 'var(--surface-2)',
-              padding: '0.8rem',
-              borderRadius: 'var(--rayon)',
-              fontSize: '0.8rem',
-              marginTop: '1rem',
-            }}
-          >
+          <pre className="garde__trace">
             {erreur.message}
           </pre>
-          <p style={{ marginTop: '1.2rem' }}>
+          <div className="vide__actions">
             <button type="button" className="btn btn--principal" onClick={() => location.reload()}>
               Recharger
             </button>
-          </p>
+          </div>
         </div>
       </div>
     )

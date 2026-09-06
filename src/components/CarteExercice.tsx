@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Exercice } from '../types'
 import { LIBELLE_FORMAT } from '../lib/exercices'
 import { comparerReponse, decouperCloze, type Verdict } from '../lib/texte'
@@ -35,10 +35,15 @@ export default function CarteExercice({ exercice, accentsStricts, onRepondre, re
     if (libre) champ.current?.focus()
   }, [exercice.mot.id, exercice.format, libre])
 
-  // Raccourcis clavier : 1–4 pour les options, sans interférer avec la saisie.
+  // Raccourcis clavier : 1–4 pour les options, Espace pour révéler la solution
   useEffect(() => {
     if (reponse || libre) return
     const onKey = (e: KeyboardEvent) => {
+      if (e.key === ' ' || e.code === 'Space') {
+        e.preventDefault()
+        valider('')
+        return
+      }
       const i = Number(e.key) - 1
       const options = exercice.options
       if (options && i >= 0 && i < options.length) {
@@ -63,9 +68,10 @@ export default function CarteExercice({ exercice, accentsStricts, onRepondre, re
     onRepondre({ reussi: verdict.correct, verdict, saisie: valeur, ms: Date.now() - debut.current })
   }
 
-  const { avant, apres } = exercice.support
-    ? decouperCloze(exercice.support)
-    : { avant: '', apres: '' }
+  const { avant, apres } = useMemo(
+    () => (exercice.support ? decouperCloze(exercice.support) : { avant: '', apres: '' }),
+    [exercice.support],
+  )
 
   return (
     <div className="exercice">
@@ -118,6 +124,18 @@ export default function CarteExercice({ exercice, accentsStricts, onRepondre, re
         </div>
       )}
 
+      {!reponse && !libre && (
+        <div className="exercice__passer-boite">
+          <button
+            type="button"
+            className="btn btn--discret exercice__btn-passer"
+            onClick={() => valider('')}
+          >
+            Passer et révéler (<kbd>Espace</kbd>)
+          </button>
+        </div>
+      )}
+
       {libre && (
         <form
           onSubmit={(e) => {
@@ -138,6 +156,7 @@ export default function CarteExercice({ exercice, accentsStricts, onRepondre, re
             autoCorrect="off"
             autoCapitalize="off"
             spellCheck={false}
+            maxLength={60}
             value={reponse ? reponse.saisie : saisie}
             disabled={reponse !== null}
             onChange={(e) => setSaisie(e.target.value)}
@@ -146,7 +165,7 @@ export default function CarteExercice({ exercice, accentsStricts, onRepondre, re
 
           {!reponse && (
             <>
-              <div className="accents" aria-label="Caractères accentués">
+              <div className="accents" role="group" aria-label="Caractères accentués">
                 {ACCENTS.map((c) => (
                   <button
                     key={c}
@@ -161,14 +180,22 @@ export default function CarteExercice({ exercice, accentsStricts, onRepondre, re
                   </button>
                 ))}
               </div>
-              <button
-                type="submit"
-                className="btn btn--principal"
-                style={{ marginTop: '0.8rem' }}
-                disabled={!saisie.trim()}
-              >
-                Valider
-              </button>
+              <div className="exercice__form-actions">
+                <button
+                  type="submit"
+                  className="btn btn--principal"
+                  disabled={!saisie.trim()}
+                >
+                  Valider
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--discret exercice__btn-passer"
+                  onClick={() => valider('')}
+                >
+                  Révéler la solution
+                </button>
+              </div>
             </>
           )}
         </form>
