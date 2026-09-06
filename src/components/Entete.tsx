@@ -1,5 +1,6 @@
 import type { Onglet } from '../App'
 import { useApp } from '../store/AppContext'
+import LogoMarque from './LogoMarque'
 
 interface Props {
   onglet?: Onglet
@@ -23,6 +24,7 @@ export default function Entete({ onglet = 'accueil', onChange, aReviser }: Props
           className="entete__marque-btn"
           aria-label="Accueil Lexique"
         >
+          <LogoMarque taille={34} className="marque__logo" />
           <span className="marque">
             Lexique<span>.</span>
           </span>
